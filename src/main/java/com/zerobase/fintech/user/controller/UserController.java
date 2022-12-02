@@ -1,5 +1,6 @@
 package com.zerobase.fintech.user.controller;
 
+import com.zerobase.fintech.user.dto.LoginDto;
 import com.zerobase.fintech.user.dto.CreateUserDto;
 import com.zerobase.fintech.user.error.EmailExistedException;
 import com.zerobase.fintech.user.error.DifferentPasswordException;
@@ -36,5 +37,16 @@ public class UserController {
             return new ResponseEntity("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity login(LoginDto loginDto){
+        if(userService.validationLogin(loginDto.getEmail(), loginDto.getPassword())){
+            return new ResponseEntity("로그인 성공 !", HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity("로그인 실패 ㅠ", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 }

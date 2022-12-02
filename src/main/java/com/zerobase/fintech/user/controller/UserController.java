@@ -1,14 +1,18 @@
 package com.zerobase.fintech.user.controller;
 
-import com.zerobase.fintech.user.dto.LoginDto;
 import com.zerobase.fintech.user.dto.CreateUserDto;
-import com.zerobase.fintech.user.error.EmailExistedException;
+import com.zerobase.fintech.user.dto.LoginDto;
 import com.zerobase.fintech.user.error.DifferentPasswordException;
+import com.zerobase.fintech.user.error.EmailExistedException;
 import com.zerobase.fintech.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RequiredArgsConstructor
@@ -22,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody CreateUserDto createUserDto){
+    public ResponseEntity register(@Validated @RequestBody CreateUserDto createUserDto){
         if(userService.isDuplicatedEmail(createUserDto.getEmail())){
             return handlerLoginException(new EmailExistedException("중복된 이메일입니다."));
         }
@@ -39,14 +43,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(LoginDto loginDto){
+    public ResponseEntity login(@RequestBody LoginDto loginDto){
         if(userService.validationLogin(loginDto.getEmail(), loginDto.getPassword())){
             return new ResponseEntity("로그인 성공 !", HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity("로그인 실패 ㅠ", HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
 }

@@ -1,22 +1,37 @@
 package com.zerobase.fintech.user.config;
 
-import lombok.RequiredArgsConstructor;
+import com.zerobase.fintech.jwt.JwtAccessDeniedHandler;
+import com.zerobase.fintech.jwt.JwtAuthenticationEntryPoint;
+import com.zerobase.fintech.jwt.JwtSecurityConfig;
+import com.zerobase.fintech.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
+
+    private final TokenProvider tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+
+    public SecurityConfiguration(TokenProvider tokenProvider,
+                                 JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                 JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+
+        this.tokenProvider = tokenProvider;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    }
 
     @Bean
     PasswordEncoder getPasswordEncoder() {
@@ -25,7 +40,22 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.
+                csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않기 때문에 설정함
+                .and()
+                .authorizeRequests()
+                .antMatchers("/","/register","/user/login").permitAll() // 토큰이 없는 상태에서 요청
+                .antMatchers("/user/**").hasRole("USER") // 토큰이 없는 상태에서 요청
+                .antMatchers("/admin/**").hasRole("ADMIN") // 토큰이 없는 상태에서 요청
+                .anyRequest().authenticated()
+                .and()
+                .apply(new JwtSecurityConfig(tokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig 클래스 적용
+
         return http.build();
     }
 }

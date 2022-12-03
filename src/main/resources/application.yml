@@ -15,3 +15,7 @@ spring:
         format_sql: true
         hibernate:
           show-sql:true
+jwt:
+  header: Authorization
+  secret: MGNhYjZkMzZhNjhiNzc1M2YzNTY1MjJlNTEyOTA2NmY0MGU1OGNlOWJiMmRiZGY1ZGI3YjY0NzgxMzUzMjdmMzU1ZTJlY2U1YzM0ZmYzMzk0NmRjNjAxZjBjMTAxZjYyMDNmNGQ1MmQ3YmEzMGFhN2MyZDFjMjQyODczMTBmMDQ=
+  token-validity-in-seconds: 86400

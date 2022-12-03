@@ -1,18 +1,14 @@
 package com.zerobase.fintech.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.validation.constraints.Email;
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class LoginDto {
-    @Email
-    private String email;
+
+    private String username;
     private String password;
 }

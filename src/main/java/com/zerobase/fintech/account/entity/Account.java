@@ -39,7 +39,6 @@ public class Account {
 
     public static Account of(CreateAccountDto createAccountDto){
         return Account.builder()
-                .user(createAccountDto.getUser())
                 .balance(createAccountDto.getInitBalance())
                 .password(createAccountDto.getInitPassword())
                 .build();

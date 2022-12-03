@@ -1,75 +1,71 @@
 package com.zerobase.fintech.user.service;
 
-import com.zerobase.fintech.UserRole;
-import com.zerobase.fintech.user.domain.User;
-import com.zerobase.fintech.user.dto.CreateUserDto;
+import com.zerobase.fintech.user.entity.UserRole;
+import com.zerobase.fintech.user.dto.UserDto;
+import com.zerobase.fintech.user.entity.Authority;
+import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.zerobase.fintech.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 아이디 생성
-    public boolean createAccount(CreateUserDto createUserDto) {
-        if (isDuplicatedEmail(createUserDto.getEmail())) {
-            return false;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public User register(UserDto userDto) {
+        if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
+            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
-        if (!createUserDto.getPassword().equals(createUserDto.getPassword2())) {
-            return false;
-        }
+
+
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
 
         // 비밀번호 알고리즘
-        String encPassword = passwordEncoder.encode(createUserDto.getPassword());
-        String encSsn = passwordEncoder.encode(createUserDto.getSsn1() + createUserDto.getSsn2());
+        String encPassword = passwordEncoder.encode(userDto.getPassword());
+        String encSsn = passwordEncoder.encode(userDto.getSsn());
 
         User user = User.builder()
-                .email(createUserDto.getEmail())
+                .username(userDto.getUsername())
+                .name(userDto.getName())
                 .password(encPassword)
                 .ssn(encSsn)
-                .userName(createUserDto.getUserName())
                 .createdAt(LocalDateTime.now())
-                .userType("user").build();
+                .role(UserRole.ROLE_USER)
+                .authorities(Collections.singleton(authority))
+                .activated(true)
+                .build();
 
-        userRepository.save(user);
-        return true;
+        return userRepository.save(user);
     }
 
-    // 이메일 중복 확인
-    public boolean isDuplicatedEmail(String email) {
-        boolean emailDuplicate = userRepository.existsByEmail(email);
-        return emailDuplicate;
+    //유저, 권한 정보를 가져오는 메소드 2개
+
+    //username을 파라미터로 받아서 어떤 username이든 객체를 바로바로 가져올 수 있게 만듦
+    public Optional<User> getUserWithAuthorities(String username){
+        return userRepository.findOneWithAuthoritiesByUsername(username);
     }
 
-    // 로그인
-    public boolean validationLogin(String email, String password) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
-
-        if (!user.isPresent()) {
-            return false;
-        }
-        if (!passwordEncoder.matches(password, user.get().getPassword())) {
-            return false;
-        }
-        return true;
+    //현재 SecurityContext에 저장되어 있는 username에 해당하는 유저 정보와 권한 정보만 받을 수 있는 메소
+    public Optional<User> getMyUserWithAuthorities(){
+        return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
     }
+
 }
 
 

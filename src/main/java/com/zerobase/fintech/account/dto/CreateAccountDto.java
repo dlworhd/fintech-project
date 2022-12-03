@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateAccountDto {
 
-    private User user;
     private String initPassword;
     private Long initBalance;
 

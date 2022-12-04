@@ -1,4 +1,4 @@
-package com.zerobase.fintech.user.entity;
+package com.zerobase.fintech.jwt.entity;
 
 import lombok.*;
 

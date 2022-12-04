@@ -1,11 +1,15 @@
 package com.zerobase.fintech.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zerobase.fintech.jwt.entity.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class) // 매번 시간 데이터를 입력해야 하는 경우에 Audit(감시)을 이용하면 자동으로 시간 매핑하여 테이블에 주입
 public class User {
 
     @Id
@@ -26,30 +31,19 @@ public class User {
     private UUID id;
 
     private String password;
-
-    @Column(name = "username")
     private String username;
-
-    @Column(name = "name")
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private UserRole role;
-
-    @Column(name = "ssn")
     private String ssn;
 
-    @JsonIgnore
-    @Column(name = "activated")
-    private boolean activated;
-
-    @Column(name = "created_At")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+    @CreatedDate
     private LocalDateTime createdAt;
-
-    @Column(name = "modified_At")
+    @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+
+    //별도의 테이블 생성,
     @ManyToMany
     @JoinTable(
             name = "user_authority" ,

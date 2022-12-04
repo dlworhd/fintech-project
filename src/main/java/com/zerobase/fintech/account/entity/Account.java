@@ -21,15 +21,14 @@ import java.time.LocalDateTime;
 public class Account {
 
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private Long id;
+    private String accountNumber;
+
     @ManyToOne
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private boolean accountStatus;
-    private String accountNumber;
+    private AccountStatus accountStatus;
     private Long balance;
     private String password;
 

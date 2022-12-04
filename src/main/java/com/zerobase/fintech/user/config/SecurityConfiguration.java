@@ -50,8 +50,8 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/","/register","/login").permitAll() // 토큰이 없는 상태에서 요청
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/account/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/accountRegister").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

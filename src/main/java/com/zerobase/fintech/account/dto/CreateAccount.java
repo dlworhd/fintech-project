@@ -7,11 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+
 // inner 클래스를 쓰면 좀 더 명시적이면서 알아 보기 쉬운 장점, 각각을 하나의 DTO라고 보면 됨
 public class CreateAccount {
 
@@ -41,7 +37,7 @@ public class CreateAccount {
     @Builder
     public static class Response {
 
-        private Long userId;
+        private Long username;
         private Long accountNumber;
         private LocalDateTime registeredAt;
 

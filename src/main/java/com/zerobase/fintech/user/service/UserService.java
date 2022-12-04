@@ -46,7 +46,7 @@ public class UserService {
                 .password(encPassword)
                 .ssn(encSsn)
                 .createdAt(LocalDateTime.now())
-                .role(UserRole.ROLE_USER)
+                .role(UserRole.USER)
                 .authorities(Collections.singleton(authority))
                 .build();
 

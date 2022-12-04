@@ -2,6 +2,7 @@ package com.zerobase.fintech.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zerobase.fintech.jwt.entity.Authority;
+import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)", name = "id")
     private UUID id;
 
     private String password;

@@ -1,8 +1,8 @@
 package com.zerobase.fintech.user.service;
 
 import com.zerobase.fintech.user.entity.UserRole;
-import com.zerobase.fintech.user.dto.UserDto;
-import com.zerobase.fintech.user.entity.Authority;
+import com.zerobase.fintech.user.dto.Register;
+import com.zerobase.fintech.jwt.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
 import com.zerobase.fintech.util.SecurityUtil;
@@ -26,8 +26,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(UserDto userDto) {
-        if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
+    public User register(Register register) {
+        if (userRepository.findOneWithAuthoritiesByUsername(register.getUsername()).orElse(null) != null) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
 
@@ -37,18 +37,17 @@ public class UserService {
                 .build();
 
         // 비밀번호 알고리즘
-        String encPassword = passwordEncoder.encode(userDto.getPassword());
-        String encSsn = passwordEncoder.encode(userDto.getSsn());
+        String encPassword = passwordEncoder.encode(register.getPassword());
+        String encSsn = passwordEncoder.encode(register.getSsn());
 
         User user = User.builder()
-                .username(userDto.getUsername())
-                .name(userDto.getName())
+                .username(register.getUsername())
+                .name(register.getName())
                 .password(encPassword)
                 .ssn(encSsn)
                 .createdAt(LocalDateTime.now())
                 .role(UserRole.ROLE_USER)
                 .authorities(Collections.singleton(authority))
-                .activated(true)
                 .build();
 
         return userRepository.save(user);
@@ -61,7 +60,7 @@ public class UserService {
         return userRepository.findOneWithAuthoritiesByUsername(username);
     }
 
-    //현재 SecurityContext에 저장되어 있는 username에 해당하는 유저 정보와 권한 정보만 받을 수 있는 메소
+    //현재 SecurityContext에 저장되어 있는 username에 해당하는 유저 정보와 권한 정보만 받을 수 있는 메소드
     public Optional<User> getMyUserWithAuthorities(){
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
     }

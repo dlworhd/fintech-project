@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class Register {
 
         @NotEmpty(message = "아이디 필수 항목입니다.")
         private String username;

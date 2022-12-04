@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt;
+package com.zerobase.fintech.jwt.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

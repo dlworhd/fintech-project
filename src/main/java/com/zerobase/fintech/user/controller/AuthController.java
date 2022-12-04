@@ -1,9 +1,9 @@
 package com.zerobase.fintech.user.controller;
 
-import com.zerobase.fintech.jwt.JwtFilter;
-import com.zerobase.fintech.jwt.TokenProvider;
-import com.zerobase.fintech.user.dto.LoginDto;
-import com.zerobase.fintech.user.dto.TokenDto;
+import com.zerobase.fintech.jwt.config.JwtFilter;
+import com.zerobase.fintech.jwt.config.TokenProvider;
+import com.zerobase.fintech.user.dto.Login;
+import com.zerobase.fintech.jwt.dto.TokenDto;
 import com.zerobase.fintech.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
 public class AuthController {
 
     private final UserService userService;
@@ -40,10 +38,10 @@ public class AuthController {
     // 로그인 API 경로
     // authenticationToken을 이용해서 Authentication 객체를 생성하려고 authenticate()가 실행될 때 loadUSerByUsername()가 실행됨
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> authorize(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response){
+    public ResponseEntity<TokenDto> authorize(@RequestBody @Valid Login login, HttpServletResponse response){
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword());
+                new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
 
         // 만들어진 토큰을 가지고 authentication 토큰을 만들어서 Authentication 객체를 생성, 이 Authentication을 Security Context에 등록
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

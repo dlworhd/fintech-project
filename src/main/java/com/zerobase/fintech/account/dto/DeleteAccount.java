@@ -4,13 +4,11 @@ import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
-
 // inner 클래스를 쓰면 좀 더 명시적이면서 알아 보기 쉬운 장점, 각각을 하나의 DTO라고 보면 됨
-public class CreateAccount {
+public class DeleteAccount {
 
     @Getter
     @Setter
@@ -21,10 +19,9 @@ public class CreateAccount {
         @NotBlank
         private String password;
         @NotBlank
-        private String accountPassword;
+        private String accountNumber;
         @NotBlank
-        @Min(100)
-        private Long initialBalance;
+        private String accountPassword;
 
     }
 
@@ -37,15 +34,15 @@ public class CreateAccount {
 
         private String username;
         private String accountNumber;
-        private LocalDateTime registeredAt;
+        private LocalDateTime unRegisteredAt;
 
         public static Response from(AccountDto accountDto){
+
             return Response.builder()
                     .username(accountDto.getUsername())
                     .accountNumber(accountDto.getAccountNumber())
-                    .registeredAt(accountDto.getRegisteredAt())
+                    .unRegisteredAt(accountDto.getUnRegisteredAt())
                     .build();
         }
-
     }
 }

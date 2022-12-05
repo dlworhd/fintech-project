@@ -8,13 +8,12 @@ spring:
     database: mysql
     show-sql: 'true'
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       generate-ddl: true
     properties:
       hibernate:
         format_sql: true
-        hibernate:
-          show-sql:true
+        show_sql: true
 jwt:
   header: Authorization
   secret: MGNhYjZkMzZhNjhiNzc1M2YzNTY1MjJlNTEyOTA2NmY0MGU1OGNlOWJiMmRiZGY1ZGI3YjY0NzgxMzUzMjdmMzU1ZTJlY2U1YzM0ZmYzMzk0NmRjNjAxZjBjMTAxZjYyMDNmNGQ1MmQ3YmEzMGFhN2MyZDFjMjQyODczMTBmMDQ=

@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class) // 매번 시간 데이터를 입력해야 하는 경우에 Audit(감시)을 이용하면 자동으로 시간 매핑하여 테이블에 주입
 public class Account {
 
-
     @Id
     private String accountNumber;
 
@@ -32,11 +31,8 @@ public class Account {
     private Long balance;
     private String password;
 
-
-
     private LocalDateTime registeredAt;
     private LocalDateTime unRegisteredAt;
-
 
     @CreatedDate
     private LocalDateTime createdAt;

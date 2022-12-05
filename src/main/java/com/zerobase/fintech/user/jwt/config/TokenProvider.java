@@ -24,12 +24,9 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-
     private static final String AUTHORITIES_KEY = "auth";
-
     private final String secret;
     private final long tokenValidityInMillisecionds;
-
     private Key key;
 
     // 의존성 주입
@@ -38,7 +35,7 @@ public class TokenProvider implements InitializingBean {
         this.tokenValidityInMillisecionds = tokenValidityInMillisecionds * 1000;
     }
 
-    //주입받은 secret값을 Base64 Decode해서 변수에 할당
+    // 주입 받은 secret값을 Base64 Decode해서 변수에 할당
     @Override
     public void afterPropertiesSet() throws Exception {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -63,7 +60,6 @@ public class TokenProvider implements InitializingBean {
 
     // 위와 반대로 토큰을 가지고 클레임을 만든 후 Authentication 객체를 리턴하는 메소드 생성
     public Authentication getAuthentication(String token) {
-
 
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody();

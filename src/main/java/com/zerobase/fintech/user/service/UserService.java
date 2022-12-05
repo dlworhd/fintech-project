@@ -2,9 +2,11 @@ package com.zerobase.fintech.user.service;
 
 import com.zerobase.fintech.user.entity.UserRole;
 import com.zerobase.fintech.user.dto.Register;
+import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.user.jwt.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
+import com.zerobase.fintech.user.type.UserErrorCode;
 import com.zerobase.fintech.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +30,8 @@ public class UserService {
 
     public User register(Register register) {
         if (userRepository.findOneWithAuthoritiesByUsername(register.getUsername()).orElse(null) != null) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+            throw new UserException(UserErrorCode.DUPLICATED_USER);
         }
-
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
@@ -63,6 +64,18 @@ public class UserService {
     //현재 SecurityContext에 저장되어 있는 username에 해당하는 유저 정보와 권한 정보만 받을 수 있는 메소드
     public Optional<User> getMyUserWithAuthorities(){
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
+    }
+
+    public boolean usernameCheck(String username) {
+        Optional.ofNullable(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND)));
+        return true;
+    }
+    public boolean securityPasswordCheck(String username, String password){
+        if (!passwordEncoder.matches(password, userRepository.findByUsername(username).get().getPassword())) {
+            throw new UserException(UserErrorCode.WRONG_USER_PASSWORD);
+        }
+        return true;
     }
 
 }

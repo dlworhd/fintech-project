@@ -23,7 +23,6 @@ public class SecurityConfiguration {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-
     public SecurityConfiguration(TokenProvider tokenProvider,
                                  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                                  JwtAccessDeniedHandler jwtAccessDeniedHandler) {

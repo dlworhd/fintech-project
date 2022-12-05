@@ -15,18 +15,18 @@ import javax.validation.constraints.Size;
 @Builder
 public class Register {
 
-        @NotBlank(message = "아이디 필수 항목입니다.")
-        private String username;
+    @NotBlank(message = "아이디 필수 항목입니다.")
+    private String username;
 
-        @NotBlank(message = "이름은 필수 항목입니다.")
-        private String name;
+    @NotBlank(message = "이름은 필수 항목입니다.")
+    private String name;
 
-        @NotBlank(message = "비밀번호는 필수 항목입니다.")
-        private String password;
+    @NotBlank(message = "비밀번호는 필수 항목입니다.")
+    private String password;
 
-        @Size(min = 13, max = 13)
-        @NotBlank(message = "생년월일은 필수 항목입니다.")
-        private String ssn;
-        }
+    @Size(min = 13, max = 13)
+    @NotBlank(message = "생년월일은 필수 항목입니다.")
+    private String ssn;
+}
 
 

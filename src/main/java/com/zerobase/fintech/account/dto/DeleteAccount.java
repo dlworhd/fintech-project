@@ -1,5 +1,6 @@
 package com.zerobase.fintech.account.dto;
 
+import com.zerobase.fintech.account.entity.AccountStatus;
 import lombok.*;
 
 import javax.validation.constraints.Min;
@@ -34,6 +35,7 @@ public class DeleteAccount {
 
         private String username;
         private String accountNumber;
+        private AccountStatus accountStatus;
         private LocalDateTime unRegisteredAt;
 
         public static Response from(AccountDto accountDto){
@@ -41,6 +43,7 @@ public class DeleteAccount {
             return Response.builder()
                     .username(accountDto.getUsername())
                     .accountNumber(accountDto.getAccountNumber())
+                    .accountStatus(accountDto.getAccountStatus())
                     .unRegisteredAt(accountDto.getUnRegisteredAt())
                     .build();
         }

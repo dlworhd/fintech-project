@@ -20,5 +20,4 @@ public class Authority {
     @Id
     @Column(name = "authority_name", length = 50)
     private String authorityName;
-
 }

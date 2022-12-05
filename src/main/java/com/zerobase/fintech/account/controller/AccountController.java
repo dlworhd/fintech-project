@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AccountController {
-    private final AccountService accountService;
 
+    private final AccountService accountService;
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
-
 
     @PostMapping("/account/create")
     public CreateAccount.Response createAccount(@RequestBody CreateAccount.Request request) {
@@ -29,10 +28,14 @@ public class AccountController {
                 request.getInitialBalance())
         );
     }
-//
-//    @DeleteMapping("/account/delete")
-//    public DeleteAccount.Response deleteAccount(@RequestBody DeleteAccount.Request request) {
-//        accountService.deleteAccount(request);
-//        return DeleteAccount.Response.from();
-//    }
+
+    @DeleteMapping("/account/delete")
+    public DeleteAccount.Response deleteAccount(@RequestBody DeleteAccount.Request request) {
+        return DeleteAccount.Response.from(accountService.deleteAccount(
+                request.getUsername(),
+                request.getPassword(),
+                request.getAccountNumber(),
+                request.getAccountPassword()
+        ));
+    }
 }

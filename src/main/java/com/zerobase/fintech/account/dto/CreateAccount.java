@@ -14,6 +14,8 @@ public class CreateAccount {
 
     @Getter
     @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Request {
 
         @NotBlank

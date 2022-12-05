@@ -1,15 +1,14 @@
 package com.zerobase.fintech.user.entity;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum UserRole {
-    ADMIN("ROLE_ADMIN"), USER("ROLE_USER");
 
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
 
-    String value;
-
-    UserRole(String value) {
-        this.value = value;
-    }
+    private final String value;
 }

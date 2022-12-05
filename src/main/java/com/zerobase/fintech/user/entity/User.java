@@ -1,8 +1,6 @@
 package com.zerobase.fintech.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zerobase.fintech.jwt.entity.Authority;
-import jdk.jfr.Name;
+import com.zerobase.fintech.user.jwt.entity.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,7 +40,6 @@ public class User {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime modifiedAt;
-
 
     //별도의 테이블 생성,
     @ManyToMany

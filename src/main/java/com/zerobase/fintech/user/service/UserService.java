@@ -2,7 +2,7 @@ package com.zerobase.fintech.user.service;
 
 import com.zerobase.fintech.user.entity.UserRole;
 import com.zerobase.fintech.user.dto.Register;
-import com.zerobase.fintech.jwt.entity.Authority;
+import com.zerobase.fintech.user.jwt.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
 import com.zerobase.fintech.util.SecurityUtil;
@@ -45,7 +45,7 @@ public class UserService {
                 .name(register.getName())
                 .password(encPassword)
                 .ssn(encSsn)
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now().withNano(0))
                 .role(UserRole.USER)
                 .authorities(Collections.singleton(authority))
                 .build();

@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt.dto;
+package com.zerobase.fintech.user.jwt.dto;
 
 
 import lombok.*;

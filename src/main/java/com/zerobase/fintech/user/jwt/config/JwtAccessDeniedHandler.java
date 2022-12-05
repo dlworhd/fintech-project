@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt.config;
+package com.zerobase.fintech.user.jwt.config;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

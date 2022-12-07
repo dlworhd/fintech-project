@@ -9,9 +9,10 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    Optional<User> findByUsername(String username);
-
     // 쿼리가 수행될 때 아이디를 권한과 함께 Lazy 조회가 아닌 Eager 조회로 가져옴
     @EntityGraph(attributePaths = "authorities")
     Optional<User> findOneWithAuthoritiesByUsername(String username);
+    Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
+
 }

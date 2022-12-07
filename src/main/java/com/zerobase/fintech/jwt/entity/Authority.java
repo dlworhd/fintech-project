@@ -1,12 +1,10 @@
-package com.zerobase.fintech.user.jwt.entity;
+package com.zerobase.fintech.jwt.entity;
 
 import lombok.*;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 
 @Table(name = "authority")
 @Getter

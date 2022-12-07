@@ -37,4 +37,5 @@ out/
 .vscode/
 logs
 
-src/main/resources/**
+### Setting ###
+src/main/resources/**.DS_Store

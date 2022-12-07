@@ -4,6 +4,8 @@ import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,12 +15,17 @@ import java.time.LocalDateTime;
 @Builder
 public class AccountDto {
 
+    @NotBlank
     private String username;
+    @NotBlank
     private String accountNumber;
+    @NotNull
     private Long balance;
+    @NotNull
     private AccountStatus accountStatus;
-
+    @NotNull
     private LocalDateTime registeredAt;
+    @NotNull
     private LocalDateTime unRegisteredAt;
 
     public static AccountDto fromEntity(Account account) {

@@ -5,10 +5,9 @@ import com.zerobase.fintech.user.type.UserErrorCode;
 public class UserException extends RuntimeException{
 
     private UserErrorCode userErrorCode;
-    private String errorMessage;
 
     public UserException(UserErrorCode userErrorCode) {
+        super(userErrorCode.getDescription());
         this.userErrorCode = userErrorCode;
-        this.errorMessage = userErrorCode.getDescription();
     }
 }

@@ -1,6 +1,6 @@
 package com.zerobase.fintech.user.entity;
 
-import com.zerobase.fintech.user.jwt.entity.Authority;
+import com.zerobase.fintech.jwt.entity.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +29,8 @@ public class User {
     @Column(columnDefinition = "BINARY(16)", name = "id")
     private UUID id;
 
-    private String password;
     private String username;
+    private String password;
     private String name;
     private String ssn;
 
@@ -48,6 +48,4 @@ public class User {
             joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
-
-
 }

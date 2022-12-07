@@ -2,14 +2,9 @@ package com.zerobase.fintech.account.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
-
-
-// inner 클래스를 쓰면 좀 더 명시적이면서 알아 보기 쉬운 장점, 각각을 하나의 DTO라고 보면 됨
 public class CreateAccount {
 
     @Getter
@@ -18,14 +13,18 @@ public class CreateAccount {
     @NoArgsConstructor
     public static class Request {
 
-        @NotBlank
+        @NotBlank(message = "아이디는 필수 항목입니다.")
         private String username;
-        @NotBlank
+
+        @NotBlank(message = "비밀번호는 필수 항목입니다.")
         private String password;
-        @NotBlank
+
+        @Size(min = 4, max = 4)
+        @NotBlank(message = "비밀번호 4자리를 입력해주세요.")
         private String accountPassword;
-        @NotBlank
+
         @Min(100)
+        @NotNull(message = "계좌 초기 금액 100원 이상 입력해주세요.")
         private Long initialBalance;
 
     }
@@ -37,8 +36,11 @@ public class CreateAccount {
     @Builder
     public static class Response {
 
+        @NotBlank
         private String username;
+        @NotBlank
         private String accountNumber;
+        @NotNull
         private LocalDateTime registeredAt;
 
         public static Response from(AccountDto accountDto){
@@ -48,6 +50,5 @@ public class CreateAccount {
                     .registeredAt(accountDto.getRegisteredAt())
                     .build();
         }
-
     }
 }

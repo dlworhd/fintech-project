@@ -1,9 +1,9 @@
 package com.zerobase.fintech.user.config;
 
-import com.zerobase.fintech.user.jwt.config.JwtAccessDeniedHandler;
-import com.zerobase.fintech.user.jwt.config.JwtAuthenticationEntryPoint;
-import com.zerobase.fintech.user.jwt.config.JwtSecurityConfig;
-import com.zerobase.fintech.user.jwt.config.TokenProvider;
+import com.zerobase.fintech.jwt.config.JwtAccessDeniedHandler;
+import com.zerobase.fintech.jwt.config.JwtAuthenticationEntryPoint;
+import com.zerobase.fintech.jwt.config.JwtSecurityConfig;
+import com.zerobase.fintech.jwt.config.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -50,8 +50,9 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않기 때문에 설정함
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/register").permitAll()
+                .antMatchers("/", "/user/login", "/user/register").permitAll()
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/account/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig 클래스 적용

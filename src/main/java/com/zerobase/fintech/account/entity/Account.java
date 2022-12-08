@@ -1,6 +1,5 @@
 package com.zerobase.fintech.account.entity;
 
-import com.zerobase.fintech.account.dto.CreateAccountDto;
 import com.zerobase.fintech.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

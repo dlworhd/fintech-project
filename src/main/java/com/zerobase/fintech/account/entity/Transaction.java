@@ -1,6 +1,5 @@
 package com.zerobase.fintech.account.entity;
 
-import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.type.TransactionStatus;
 import com.zerobase.fintech.account.type.TransactionType;
 import lombok.*;

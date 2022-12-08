@@ -1,16 +1,13 @@
 package com.zerobase.fintech.account.service;
 
-import com.zerobase.fintech.account.dto.*;
+import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
-import com.zerobase.fintech.account.entity.Transaction;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
 import com.zerobase.fintech.account.repository.TransactionRepository;
 import com.zerobase.fintech.account.type.AccountCode;
 import com.zerobase.fintech.account.type.AccountErrorCode;
-import com.zerobase.fintech.account.type.TransactionStatus;
-import com.zerobase.fintech.account.type.TransactionType;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.user.repository.UserRepository;
@@ -20,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
@@ -38,17 +36,11 @@ public class AccountService {
 		this.userService = userService;
 	}
 
-
+	@Transactional
 	public AccountDto createAccount(String username, String password, String accountPassword, Long initialBalance) {
 
-		// 계정 유무 확인
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-
-		// 유저 아이디 확인
-		userService.usernameCheck(username);
-		// 계정 비밀번호 확인
-		userService.securityPasswordCheck(username, password);
+		// 유저 정보 확인
+		User user = userCheck(username, password);
 
 		return AccountDto.fromEntity(accountRepository.save(Account.builder()
 				.password(passwordEncoder.encode(accountPassword))
@@ -60,32 +52,22 @@ public class AccountService {
 				.build()));
 	}
 
+	@Transactional
 	public AccountDto deleteAccount(String username, String password, String accountNumber, String accountPassword) {
 
-		// 계정 유무 확인
-		userRepository.findByUsername(username)
-				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+		// 유저 정보 확인
+		userCheck(username, password);
+		// 계좌 정보 확인
+		Account account = accountCheck(accountNumber,accountPassword);
 
-		// 계좌 유무 확인
-		Account account = accountRepository.findByAccountNumber(accountNumber)
-				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 		// 이미 해지된 계좌인 경우 예외 발생
-		if (account.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED) {
-			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
-		}
-		// 유저 아이디 확인
-		userService.usernameCheck(username);
-		// 계정 비밀번호 확인
-		userService.securityPasswordCheck(username, password);
-		// 계좌 비밀번호 확인
-		validateAccountPassword(account, accountPassword);
+		isRegisteredAccount(account);
 
 		account.setAccountStatus(AccountStatus.ACCOUNT_UNREGISTERED);
 		account.setUnRegisteredAt(LocalDateTime.now());
 
 		return AccountDto.fromEntity(accountRepository.save(account));
 	}
-
 
 	public String generateAccountNumber() {
 		return accountRepository.findFirstByOrderByAccountNumberDesc().map(account
@@ -99,5 +81,30 @@ public class AccountService {
 		}
 	}
 
+	public User userCheck(String username, String password) {
+		// 계정 유무 확인
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+		// 계정 비밀번호 확인
+		userService.securityPasswordCheck(username, password);
+		return user;
+	}
 
+	public Account accountCheck(String accountNumber, String accountPassword){
+		// 계좌 유무 확인
+		Account account = accountRepository.findByAccountNumber(accountNumber)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
+		// 계좌 비밀번호 확인
+		validateAccountPassword(account, accountPassword);
+
+		return account;
+	}
+
+	public boolean isRegisteredAccount(Account account){
+		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
+			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
+		}
+		return true;
+	}
 }

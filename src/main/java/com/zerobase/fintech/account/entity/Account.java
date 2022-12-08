@@ -1,6 +1,6 @@
 package com.zerobase.fintech.account.entity;
 
-import com.zerobase.fintech.account.dto.CreateAccount;
+import com.zerobase.fintech.account.dto.CreateAccountDto;
 import com.zerobase.fintech.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,14 +40,4 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-
-
-    public static Account from(CreateAccount.Request request) {
-
-        return Account.builder()
-                .password(request.getAccountPassword())
-                .registeredAt(LocalDateTime.now())
-                .balance(request.getInitialBalance())
-                .build();
-    }
 }

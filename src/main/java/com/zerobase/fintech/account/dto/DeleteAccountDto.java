@@ -1,31 +1,31 @@
 package com.zerobase.fintech.account.dto;
 
+import com.zerobase.fintech.account.entity.AccountStatus;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-public class CreateAccount {
+public class DeleteAccountDto {
 
     @Getter
     @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class Request {
 
-        @NotBlank(message = "아이디는 필수 항목입니다.")
+        @NotBlank
         private String username;
 
-        @NotBlank(message = "비밀번호는 필수 항목입니다.")
+        @NotBlank
         private String password;
+
+        @Size(min = 10, max = 10)
+        private String accountNumber;
 
         @Size(min = 4, max = 4)
         @NotBlank(message = "비밀번호 4자리를 입력해주세요.")
         private String accountPassword;
-
-        @Min(100)
-        @NotNull(message = "계좌 초기 금액 100원 이상 입력해주세요.")
-        private Long initialBalance;
 
     }
 
@@ -36,18 +36,18 @@ public class CreateAccount {
     @Builder
     public static class Response {
 
-        @NotBlank
         private String username;
-        @NotBlank
         private String accountNumber;
-        @NotNull
-        private LocalDateTime registeredAt;
+        private AccountStatus accountStatus;
+        private LocalDateTime unRegisteredAt;
 
         public static Response from(AccountDto accountDto){
+
             return Response.builder()
                     .username(accountDto.getUsername())
                     .accountNumber(accountDto.getAccountNumber())
-                    .registeredAt(accountDto.getRegisteredAt())
+                    .accountStatus(accountDto.getAccountStatus())
+                    .unRegisteredAt(accountDto.getUnRegisteredAt())
                     .build();
         }
     }

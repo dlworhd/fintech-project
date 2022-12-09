@@ -1,13 +1,13 @@
 package com.zerobase.fintech.account.service;
 
-import com.zerobase.fintech.account.dto.DepositDto;
-import com.zerobase.fintech.account.dto.TransactionDto;
-import com.zerobase.fintech.account.dto.WithdrawDto;
+import com.zerobase.fintech.account.dto.*;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
+import com.zerobase.fintech.account.entity.Remittance;
 import com.zerobase.fintech.account.entity.Transaction;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
+import com.zerobase.fintech.account.repository.RemittanceRepository;
 import com.zerobase.fintech.account.repository.TransactionRepository;
 import com.zerobase.fintech.account.type.AccountErrorCode;
 import com.zerobase.fintech.account.type.TransactionStatus;
@@ -16,14 +16,16 @@ import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.user.repository.UserRepository;
 import com.zerobase.fintech.user.service.UserService;
 import com.zerobase.fintech.user.type.UserErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
-@Service
+@RequiredArgsConstructor
 @Slf4j
+@Service
 public class TransactionService {
 
 	private final AccountRepository accountRepository;
@@ -31,20 +33,14 @@ public class TransactionService {
 	private final UserService userService;
 	private final TransactionRepository transactionRepository;
 	private final AccountService accountService;
+	private final RemittanceRepository remittanceRepository;
 
-	public TransactionService(AccountRepository accountRepository, UserRepository userRepository, UserService userService, TransactionRepository transactionRepository, AccountService accountService) {
-		this.accountRepository = accountRepository;
-		this.userRepository = userRepository;
-		this.userService = userService;
-		this.transactionRepository = transactionRepository;
-		this.accountService = accountService;
-	}
 
 	@Transactional
 	public DepositDto.Response deposit(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
-		Account account = accountByValidUser(username,password,accountNumber,accountPassword);
+		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
 
 		account.setBalance(account.getBalance() + amount);
 		account.setModifiedAt(LocalDateTime.now());
@@ -52,20 +48,22 @@ public class TransactionService {
 
 		return DepositDto.Response.from(TransactionDto.fromEntity(
 				transactionRepository.save(Transaction.builder()
-				.transactionDate(LocalDateTime.now())
-				.transactionType(TransactionType.DEPOSIT)
-				.transactionStatus(TransactionStatus.SUCCESS)
-				.account(savedAccount)
-				.amount(amount)
-				.balanceSnapshot(savedAccount.getBalance())
-				.build())));
+						.transactionDate(LocalDateTime.now())
+						.transactionType(TransactionType.DEPOSIT)
+						.transactionStatus(TransactionStatus.SUCCESS)
+						.account(savedAccount)
+						.amount(amount)
+						.balanceSnapshot(savedAccount.getBalance())
+						.createdAt(LocalDateTime.now())
+						.modifiedAt(LocalDateTime.now())
+						.build())));
 	}
 
 	@Transactional
 	public WithdrawDto.Response withdraw(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
-		Account account = accountByValidUser(username,password,accountNumber,accountPassword);
+		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
 		// 잔액 부족시 예외 발생
 		validBalance(account, amount);
 
@@ -79,19 +77,65 @@ public class TransactionService {
 						.transactionType(TransactionType.WITHDRAWAL)
 						.transactionStatus(TransactionStatus.SUCCESS)
 						.account(savedAccount)
-						.amount(amount)
+						.amount(amount * -1)
 						.balanceSnapshot(savedAccount.getBalance())
+						.createdAt(LocalDateTime.now())
+						.modifiedAt(LocalDateTime.now())
 						.build())));
 	}
 
-	public boolean validBalance(Account account, Long amount){
-		if(account.getBalance() - amount < 0){
-			throw new AccountException(AccountErrorCode.NOT_ENOUGH_BALANCE);
+	public RemittanceInputDto.Response remittance(String senderAccountNumber,
+	                                              String receiverAccountNumber,
+	                                              String accountPassword,
+	                                              Long amount
+	) {
+
+		Account senderAccount = accountService.accountCheck(senderAccountNumber, accountPassword);
+
+		if (senderAccount.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED) {
+			throw new AccountException(AccountErrorCode.UNREGISTERED_ACCOUNT);
 		}
-		return true;
+
+		Account receiverAccount = accountRepository.findByAccountNumber(receiverAccountNumber)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.RECEIVER_ACCOUNT_NOT_FOUND));
+
+		// 잔액 부족시 예외 발생
+		validBalance(senderAccount, amount);
+
+		senderAccount.setBalance(senderAccount.getBalance() - amount);
+		receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+
+		senderAccount.setModifiedAt(LocalDateTime.now());
+		receiverAccount.setModifiedAt(LocalDateTime.now());
+
+		Transaction transaction = Transaction.builder()
+				.transactionType(TransactionType.REMITTANCE)
+				.transactionStatus(TransactionStatus.SUCCESS)
+				.transactionDate(LocalDateTime.now())
+				.account(senderAccount)
+				.amount(amount * -1)
+				.balanceSnapshot(senderAccount.getBalance())
+				.createdAt(LocalDateTime.now())
+				.modifiedAt(LocalDateTime.now())
+				.build();
+
+		return RemittanceInputDto.Response.from(RemittanceDto.fromEntity(remittanceRepository.save(
+				Remittance.builder()
+						.senderAccountNumber(senderAccount.getAccountNumber())
+						.senderName(senderAccount.getUser().getName())
+						.receiverAccountNumber(receiverAccount.getAccountNumber())
+						.receiverName(receiverAccount.getUser().getName())
+						.transaction(transactionRepository.save(transaction))
+						.build())));
 	}
 
-	public Account accountByValidUser(String username, String password, String accountNumber, String accountPassword){
+	public void validBalance(Account account, Long amount) {
+		if (account.getBalance() - amount < 0) {
+			throw new AccountException(AccountErrorCode.NOT_ENOUGH_BALANCE);
+		}
+	}
+
+	public Account accountByValidUser(String username, String password, String accountNumber, String accountPassword) {
 		// 계정 유무 확인
 		userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
@@ -100,7 +144,7 @@ public class TransactionService {
 		Account account = accountRepository.findByAccountNumber(accountNumber)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-		if(account.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED){
+		if (account.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED) {
 			throw new AccountException(AccountErrorCode.UNREGISTERED_ACCOUNT);
 		}
 

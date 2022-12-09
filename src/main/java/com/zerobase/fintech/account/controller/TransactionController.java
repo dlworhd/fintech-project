@@ -1,6 +1,7 @@
 package com.zerobase.fintech.account.controller;
 
 import com.zerobase.fintech.account.dto.DepositDto;
+import com.zerobase.fintech.account.dto.RemittanceInputDto;
 import com.zerobase.fintech.account.dto.WithdrawDto;
 import com.zerobase.fintech.account.service.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,15 @@ public class TransactionController {
 				request.getUsername(),
 				request.getPassword(),
 				request.getAccountNumber(),
+				request.getAccountPassword(),
+				request.getAmount()), HttpStatus.OK);
+	}
+
+	@PostMapping("/user/account/send")
+	public ResponseEntity<?> send(@RequestBody @Valid RemittanceInputDto.Request request){
+		return new ResponseEntity(transactionService.remittance(
+				request.getSenderAccountNumber(),
+				request.getReceiverAccountNumber(),
 				request.getAccountPassword(),
 				request.getAmount()), HttpStatus.OK);
 	}

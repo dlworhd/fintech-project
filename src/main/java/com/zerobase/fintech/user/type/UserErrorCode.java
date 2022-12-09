@@ -1,6 +1,5 @@
 package com.zerobase.fintech.user.type;
 
-
 import lombok.Getter;
 
 @Getter

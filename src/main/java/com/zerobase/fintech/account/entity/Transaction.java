@@ -18,11 +18,16 @@ import java.time.LocalDateTime;
 public class Transaction {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
+	@JoinColumn(name = "account")
 	private Account account;
+
+	@OneToOne
+	@JoinColumn(name = "remittance_id")
+	private Remittance remittance;
 
 	@Enumerated(EnumType.STRING)
 	private TransactionType transactionType;

@@ -48,6 +48,8 @@ public class AccountService {
 				.registeredAt(LocalDateTime.now())
 				.accountNumber(generateAccountNumber())
 				.balance(initialBalance)
+				.createdAt(LocalDateTime.now())
+				.modifiedAt(LocalDateTime.now())
 				.user(user)
 				.build()));
 	}
@@ -58,7 +60,7 @@ public class AccountService {
 		// 유저 정보 확인
 		userCheck(username, password);
 		// 계좌 정보 확인
-		Account account = accountCheck(accountNumber,accountPassword);
+		Account account = accountCheck(accountNumber, accountPassword);
 
 		// 이미 해지된 계좌인 경우 예외 발생
 		isRegisteredAccount(account);
@@ -90,7 +92,7 @@ public class AccountService {
 		return user;
 	}
 
-	public Account accountCheck(String accountNumber, String accountPassword){
+	public Account accountCheck(String accountNumber, String accountPassword) {
 		// 계좌 유무 확인
 		Account account = accountRepository.findByAccountNumber(accountNumber)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
@@ -101,7 +103,7 @@ public class AccountService {
 		return account;
 	}
 
-	public boolean isRegisteredAccount(Account account){
+	public boolean isRegisteredAccount(Account account) {
 		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
 			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
 		}

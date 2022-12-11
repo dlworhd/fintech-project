@@ -36,12 +36,16 @@ public class RemittanceInputDto {
 	@Builder
 	public static class Response{
 
+		public Long amount;
+		public Long balance;
 		public String senderName;
 		public String receiverName;
 
 
 		public static Response from(RemittanceDto remittanceDto){
 			return Response.builder()
+					.amount(remittanceDto.getAmount())
+					.balance(remittanceDto.getBalance())
 					.senderName(remittanceDto.getSenderName())
 					.receiverName(remittanceDto.getReceiverName())
 					.build();

@@ -108,14 +108,6 @@ public class TransactionService {
 		senderAccount.setModifiedAt(LocalDateTime.now());
 		receiverAccount.setModifiedAt(LocalDateTime.now());
 
-		Remittance remittance = Remittance.builder()
-				.senderAccountNumber(senderAccount.getAccountNumber())
-				.senderName(senderAccount.getUser().getName())
-				.receiverAccountNumber(receiverAccount.getAccountNumber())
-				.receiverName(receiverAccount.getUser().getName())
-				.build();
-		Remittance savedRemittance = remittanceRepository.save(remittance);
-
 		Transaction transaction = Transaction.builder()
 				.transactionType(TransactionType.REMITTANCE)
 				.transactionStatus(TransactionStatus.SUCCESS)
@@ -125,17 +117,17 @@ public class TransactionService {
 				.balanceSnapshot(senderAccount.getBalance())
 				.createdAt(LocalDateTime.now())
 				.modifiedAt(LocalDateTime.now())
-				.remittance(savedRemittance)
+				.remittance(remittanceRepository.save(Remittance.builder()
+						.senderAccountNumber(senderAccount.getAccountNumber())
+						.senderName(senderAccount.getUser().getName())
+						.receiverAccountNumber(receiverAccount.getAccountNumber())
+						.receiverName(receiverAccount.getUser().getName())
+						.build()))
 				.build();
 
+		Transaction savedTransaction = transactionRepository.save(transaction);
 
-
-
-
-
-		transactionRepository.save(transaction);
-
-		return RemittanceInputDto.Response.from(RemittanceDto.fromEntity(savedRemittance));
+		return RemittanceInputDto.Response.from(RemittanceDto.fromEntity(savedTransaction));
 	}
 
 	public void validBalance(Account account, Long amount) {

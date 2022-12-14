@@ -29,10 +29,8 @@ public class AccountDto {
     @NotNull
     private LocalDateTime unRegisteredAt;
 
-
     @NotNull
     private User user;
-
 
     public static AccountDto fromEntity(Account account) {
         return AccountDto.builder()

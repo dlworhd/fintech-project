@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
-public class Remittance {
+public class Transfer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

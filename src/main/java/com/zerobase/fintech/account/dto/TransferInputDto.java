@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 
-public class RemittanceInputDto {
+public class TransferInputDto {
 
 	@Getter
 	@Setter
@@ -42,12 +42,12 @@ public class RemittanceInputDto {
 		public String receiverName;
 
 
-		public static Response from(RemittanceDto remittanceDto){
+		public static Response from(TransferDto transferDto){
 			return Response.builder()
-					.amount(remittanceDto.getAmount())
-					.balance(remittanceDto.getBalance())
-					.senderName(remittanceDto.getSenderName())
-					.receiverName(remittanceDto.getReceiverName())
+					.amount(transferDto.getAmount())
+					.balance(transferDto.getBalance())
+					.senderName(transferDto.getSenderName())
+					.receiverName(transferDto.getReceiverName())
 					.build();
 		}
 	}

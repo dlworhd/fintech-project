@@ -3,15 +3,14 @@ package com.zerobase.fintech.account.service;
 import com.zerobase.fintech.account.dto.*;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
-import com.zerobase.fintech.account.entity.Remittance;
-import com.zerobase.fintech.account.entity.Transaction;
+import com.zerobase.fintech.account.entity.Transfer;
+import com.zerobase.fintech.account.entity.DepositWithdraw;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
-import com.zerobase.fintech.account.repository.RemittanceRepository;
-import com.zerobase.fintech.account.repository.TransactionRepository;
+import com.zerobase.fintech.account.repository.TransferRepository;
+import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
 import com.zerobase.fintech.account.type.AccountErrorCode;
-import com.zerobase.fintech.account.type.TransactionStatus;
-import com.zerobase.fintech.account.type.TransactionType;
+import com.zerobase.fintech.account.type.BankServiceType;
 import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.user.repository.UserRepository;
 import com.zerobase.fintech.user.service.UserService;
@@ -26,18 +25,18 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class TransactionService {
+public class DepositWithdrawService {
 
 	private final AccountRepository accountRepository;
 	private final UserRepository userRepository;
 	private final UserService userService;
-	private final TransactionRepository transactionRepository;
+	private final DepositWithdrawRepository depositWithdrawRepository;
 	private final AccountService accountService;
-	private final RemittanceRepository remittanceRepository;
+	private final TransferRepository transferRepository;
 
 
 	@Transactional
-	public DepositDto.Response deposit(String username, String password, String accountNumber, String accountPassword, Long amount) {
+	public DepositInputDto.Response deposit(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
 		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
@@ -46,11 +45,10 @@ public class TransactionService {
 		account.setModifiedAt(LocalDateTime.now());
 		Account savedAccount = accountRepository.save(account);
 
-		return DepositDto.Response.from(TransactionDto.fromEntity(
-				transactionRepository.save(Transaction.builder()
+		return DepositInputDto.Response.from(DepositWithdrawDto.fromEntity(
+				depositWithdrawRepository.save(DepositWithdraw.builder()
 						.transactionDate(LocalDateTime.now())
-						.transactionType(TransactionType.DEPOSIT)
-						.transactionStatus(TransactionStatus.SUCCESS)
+						.bankServiceType(BankServiceType.DEPOSIT)
 						.account(savedAccount)
 						.amount(amount)
 						.balanceSnapshot(savedAccount.getBalance())
@@ -60,7 +58,7 @@ public class TransactionService {
 	}
 
 	@Transactional
-	public WithdrawDto.Response withdraw(String username, String password, String accountNumber, String accountPassword, Long amount) {
+	public WithdrawInputDto.Response withdraw(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
 		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
@@ -71,11 +69,10 @@ public class TransactionService {
 		account.setModifiedAt(LocalDateTime.now());
 		Account savedAccount = accountRepository.save(account);
 
-		return WithdrawDto.Response.from(TransactionDto.fromEntity(
-				transactionRepository.save(Transaction.builder()
+		return WithdrawInputDto.Response.from(DepositWithdrawDto.fromEntity(
+				depositWithdrawRepository.save(DepositWithdraw.builder()
 						.transactionDate(LocalDateTime.now())
-						.transactionType(TransactionType.WITHDRAWAL)
-						.transactionStatus(TransactionStatus.SUCCESS)
+						.bankServiceType(BankServiceType.WITHDRAWAL)
 						.account(savedAccount)
 						.amount(amount * -1)
 						.balanceSnapshot(savedAccount.getBalance())
@@ -84,10 +81,10 @@ public class TransactionService {
 						.build())));
 	}
 
-	public RemittanceInputDto.Response remittance(String senderAccountNumber,
-	                                              String receiverAccountNumber,
-	                                              String accountPassword,
-	                                              Long amount
+	public TransferInputDto.Response remittance(String senderAccountNumber,
+	                                            String receiverAccountNumber,
+	                                            String accountPassword,
+	                                            Long amount
 	) {
 
 		Account senderAccount = accountService.accountCheck(senderAccountNumber, accountPassword);
@@ -108,16 +105,15 @@ public class TransactionService {
 		senderAccount.setModifiedAt(LocalDateTime.now());
 		receiverAccount.setModifiedAt(LocalDateTime.now());
 
-		Transaction transaction = Transaction.builder()
-				.transactionType(TransactionType.REMITTANCE)
-				.transactionStatus(TransactionStatus.SUCCESS)
+		DepositWithdraw depositWithdraw = DepositWithdraw.builder()
+				.bankServiceType(BankServiceType.TRANSFER)
 				.transactionDate(LocalDateTime.now())
 				.account(senderAccount)
 				.amount(amount * -1)
 				.balanceSnapshot(senderAccount.getBalance())
 				.createdAt(LocalDateTime.now())
 				.modifiedAt(LocalDateTime.now())
-				.remittance(remittanceRepository.save(Remittance.builder()
+				.transfer(transferRepository.save(Transfer.builder()
 						.senderAccountNumber(senderAccount.getAccountNumber())
 						.senderName(senderAccount.getUser().getName())
 						.receiverAccountNumber(receiverAccount.getAccountNumber())
@@ -125,18 +121,18 @@ public class TransactionService {
 						.build()))
 				.build();
 
-		Transaction savedTransaction = transactionRepository.save(transaction);
+		DepositWithdraw savedDepositWithdraw = depositWithdrawRepository.save(depositWithdraw);
 
-		return RemittanceInputDto.Response.from(RemittanceDto.fromEntity(savedTransaction));
+		return TransferInputDto.Response.from(TransferDto.fromEntity(savedDepositWithdraw));
 	}
 
-	public void validBalance(Account account, Long amount) {
+	private void validBalance(Account account, Long amount) {
 		if (account.getBalance() - amount < 0) {
 			throw new AccountException(AccountErrorCode.NOT_ENOUGH_BALANCE);
 		}
 	}
 
-	public Account accountByValidUser(String username, String password, String accountNumber, String accountPassword) {
+	private Account accountByValidUser(String username, String password, String accountNumber, String accountPassword) {
 		// 계정 유무 확인
 		userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));

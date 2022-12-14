@@ -5,7 +5,7 @@ import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
-import com.zerobase.fintech.account.repository.TransactionRepository;
+import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
 import com.zerobase.fintech.account.type.AccountCode;
 import com.zerobase.fintech.account.type.AccountErrorCode;
 import com.zerobase.fintech.user.entity.User;
@@ -29,7 +29,7 @@ public class AccountService {
 	private final PasswordEncoder passwordEncoder;
 	private final UserService userService;
 
-	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, TransactionRepository transactionRepository) {
+	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, DepositWithdrawRepository depositWithdrawRepository) {
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -71,7 +71,7 @@ public class AccountService {
 		return AccountDto.fromEntity(accountRepository.save(account));
 	}
 
-	public String generateAccountNumber() {
+	private String generateAccountNumber() {
 		return accountRepository.findFirstByOrderByAccountNumberDesc().map(account
 						-> (Long.parseLong(account.getAccountNumber())) + 1 + "")
 				.orElse(AccountCode.INIT_CODE.getValue());
@@ -83,7 +83,7 @@ public class AccountService {
 		}
 	}
 
-	public User userCheck(String username, String password) {
+	private User userCheck(String username, String password) {
 		// 계정 유무 확인
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
@@ -103,7 +103,7 @@ public class AccountService {
 		return account;
 	}
 
-	public boolean isRegisteredAccount(Account account) {
+	private boolean isRegisteredAccount(Account account) {
 		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
 			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
 		}

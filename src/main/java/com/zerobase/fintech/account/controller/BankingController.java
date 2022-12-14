@@ -1,9 +1,9 @@
 package com.zerobase.fintech.account.controller;
 
-import com.zerobase.fintech.account.dto.DepositDto;
-import com.zerobase.fintech.account.dto.RemittanceInputDto;
-import com.zerobase.fintech.account.dto.WithdrawDto;
-import com.zerobase.fintech.account.service.TransactionService;
+import com.zerobase.fintech.account.dto.DepositInputDto;
+import com.zerobase.fintech.account.dto.TransferInputDto;
+import com.zerobase.fintech.account.dto.WithdrawInputDto;
+import com.zerobase.fintech.account.service.DepositWithdrawService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-public class TransactionController {
+public class BankingController {
 
-	private final TransactionService transactionService;
+	private final DepositWithdrawService depositWithdrawService;
 
 	@PostMapping("/user/account/deposit")
-	public ResponseEntity<?> deposit(@RequestBody @Valid DepositDto.Request request){
-		return new ResponseEntity(transactionService.deposit(
+	public ResponseEntity<?> deposit(@RequestBody @Valid DepositInputDto.Request request){
+		return new ResponseEntity(depositWithdrawService.deposit(
 				request.getUsername(),
 				request.getPassword(),
 				request.getAccountNumber(),
@@ -30,8 +30,8 @@ public class TransactionController {
 	}
 
 	@PostMapping("/user/account/withdraw")
-	public ResponseEntity<?> widthdraw(@RequestBody @Valid WithdrawDto.Request request){
-		return new ResponseEntity(transactionService.withdraw(
+	public ResponseEntity<?> widthdraw(@RequestBody @Valid WithdrawInputDto.Request request){
+		return new ResponseEntity(depositWithdrawService.withdraw(
 				request.getUsername(),
 				request.getPassword(),
 				request.getAccountNumber(),
@@ -40,8 +40,8 @@ public class TransactionController {
 	}
 
 	@PostMapping("/user/account/send")
-	public ResponseEntity<?> send(@RequestBody @Valid RemittanceInputDto.Request request){
-		return new ResponseEntity(transactionService.remittance(
+	public ResponseEntity<?> send(@RequestBody @Valid TransferInputDto.Request request){
+		return new ResponseEntity(depositWithdrawService.remittance(
 				request.getSenderAccountNumber(),
 				request.getReceiverAccountNumber(),
 				request.getAccountPassword(),

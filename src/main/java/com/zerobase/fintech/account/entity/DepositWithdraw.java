@@ -1,7 +1,6 @@
 package com.zerobase.fintech.account.entity;
 
-import com.zerobase.fintech.account.type.TransactionStatus;
-import com.zerobase.fintech.account.type.TransactionType;
+import com.zerobase.fintech.account.type.BankServiceType;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class Transaction {
+public class DepositWithdraw {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +25,11 @@ public class Transaction {
 	private Account account;
 
 	@OneToOne
-	@JoinColumn(name = "remittance_id")
-	private Remittance remittance;
+	@JoinColumn(name = "transfer_id")
+	private Transfer transfer;
 
 	@Enumerated(EnumType.STRING)
-	private TransactionType transactionType;
-
-	@Enumerated(EnumType.STRING)
-	private TransactionStatus transactionStatus;
+	private BankServiceType bankServiceType;
 
 	@CreatedDate
 	private LocalDateTime createdAt;

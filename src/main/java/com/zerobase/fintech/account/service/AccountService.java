@@ -1,12 +1,11 @@
 package com.zerobase.fintech.account.service;
 
 import com.zerobase.fintech.account.dto.AccountDto;
-import com.zerobase.fintech.account.dto.CreateAccount;
-import com.zerobase.fintech.account.dto.DeleteAccount;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
+import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
 import com.zerobase.fintech.account.type.AccountCode;
 import com.zerobase.fintech.account.type.AccountErrorCode;
 import com.zerobase.fintech.user.entity.User;
@@ -18,81 +17,96 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 @Slf4j
 public class AccountService {
 
-    private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
+	private final AccountRepository accountRepository;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final UserService userService;
 
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService) {
+	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, DepositWithdrawRepository depositWithdrawRepository) {
+		this.accountRepository = accountRepository;
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.userService = userService;
+	}
 
-        this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
-    }
+	@Transactional
+	public AccountDto createAccount(String username, String password, String accountPassword, Long initialBalance) {
 
-    // 1. 사용자 조회
-    // 2. 계좌 번호 생성 후 암호화 해서 저장
-    // 3. 가입 정보 반환
-    public AccountDto createAccount(CreateAccount.Request request) {
+		// 유저 정보 확인
+		User user = userCheck(username, password);
 
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+		return AccountDto.fromEntity(accountRepository.save(Account.builder()
+				.password(passwordEncoder.encode(accountPassword))
+				.accountStatus(AccountStatus.ACCOUNT_REGISTERED)
+				.registeredAt(LocalDateTime.now())
+				.accountNumber(generateAccountNumber())
+				.balance(initialBalance)
+				.createdAt(LocalDateTime.now())
+				.modifiedAt(LocalDateTime.now())
+				.user(user)
+				.build()));
+	}
 
-        // 1. 유저 아이디 체크
-        userService.usernameCheck(request.getUsername());
-        // 2. 암호화된 비밀번호 체크
-        userService.securityPasswordCheck(request.getUsername(), request.getPassword());
+	@Transactional
+	public AccountDto deleteAccount(String username, String password, String accountNumber, String accountPassword) {
 
-        Account account = Account.from(request);
+		// 유저 정보 확인
+		userCheck(username, password);
+		// 계좌 정보 확인
+		Account account = accountCheck(accountNumber, accountPassword);
 
-        account.setPassword(passwordEncoder.encode(request.getAccountPassword()));
-        account.setAccountStatus(AccountStatus.ACCOUNT_REGISTERED);
-        account.setAccountNumber(generateAccountNumber());
-        account.setUser(user);
+		// 이미 해지된 계좌인 경우 예외 발생
+		isRegisteredAccount(account);
 
-        return AccountDto.fromEntity(accountRepository.save(account));
-    }
+		account.setAccountStatus(AccountStatus.ACCOUNT_UNREGISTERED);
+		account.setUnRegisteredAt(LocalDateTime.now());
 
-    public AccountDto deleteAccount(DeleteAccount.Request request) {
+		return AccountDto.fromEntity(accountRepository.save(account));
+	}
 
-        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
-                .orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
-        if(account.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED){
-            throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
-        }
+	private String generateAccountNumber() {
+		return accountRepository.findFirstByOrderByAccountNumberDesc().map(account
+						-> (Long.parseLong(account.getAccountNumber())) + 1 + "")
+				.orElse(AccountCode.INIT_CODE.getValue());
+	}
 
-        // 1. 유저 아이디 체크
-        userService.usernameCheck(request.getUsername());
-        // 2. 암호화된 비밀번호 체크
-        userService.securityPasswordCheck(request.getUsername(), request.getPassword());
-        // 3. 암호화된 계좌 비밀번호 체크
-        securityAccountPasswordCheck(account, request.getAccountPassword());
+	public void validateAccountPassword(Account account, String password) {
+		if (!passwordEncoder.matches(password, account.getPassword())) {
+			throw new AccountException(AccountErrorCode.WRONG_ACCOUNT_PASSWORD);
+		}
+	}
 
+	private User userCheck(String username, String password) {
+		// 계정 유무 확인
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+		// 계정 비밀번호 확인
+		userService.securityPasswordCheck(username, password);
+		return user;
+	}
 
-        account.setAccountStatus(AccountStatus.ACCOUNT_UNREGISTERED);
-        account.setUnRegisteredAt(LocalDateTime.now());
-        Account updatedAccount = accountRepository.save(account);
+	public Account accountCheck(String accountNumber, String accountPassword) {
+		// 계좌 유무 확인
+		Account account = accountRepository.findByAccountNumber(accountNumber)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-        return AccountDto.fromEntity(updatedAccount);
-    }
+		// 계좌 비밀번호 확인
+		validateAccountPassword(account, accountPassword);
 
-    // 계좌 생성
-    public String generateAccountNumber() {
-        return accountRepository.findFirstByOrderByAccountNumberDesc().map(account
-                        -> (Long.parseLong(account.getAccountNumber())) + 1 + "")
-                .orElse(AccountCode.INIT_CODE.getValue());
-    }
+		return account;
+	}
 
-    public void securityAccountPasswordCheck(Account account, String password) {
-        if (!passwordEncoder.matches(password, account.getPassword())) {
-            throw new AccountException(AccountErrorCode.WRONG_ACCOUNT_PASSWORD);
-        }
-    }
+	private boolean isRegisteredAccount(Account account) {
+		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
+			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
+		}
+		return true;
+	}
 }

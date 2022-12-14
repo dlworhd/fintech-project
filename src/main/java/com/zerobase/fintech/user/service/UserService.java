@@ -64,12 +64,6 @@ public class UserService {
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
     }
 
-    public boolean usernameCheck(String username) {
-        if (!userRepository.existsByUsername(username)) {
-            throw new UserException(UserErrorCode.DUPLICATED_USER);
-        }
-        return true;
-    }
 
     public boolean securityPasswordCheck(String username, String password) {
         if (!passwordEncoder.matches(password, userRepository.findByUsername(username).get().getPassword())) {

@@ -50,7 +50,6 @@ public class AuthController {
 		// 2. TokenDto를 이용해서 Response Body에도 넣어서 리턴
 		httpHeaders.add(JwtFilter.AUTHRIZATION_HEADER, "Bearer " + jwt);
 
-
 		return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
 	}
 }

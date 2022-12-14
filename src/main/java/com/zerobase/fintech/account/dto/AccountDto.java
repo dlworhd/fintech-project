@@ -2,6 +2,7 @@ package com.zerobase.fintech.account.dto;
 
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
+import com.zerobase.fintech.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -28,14 +29,18 @@ public class AccountDto {
     @NotNull
     private LocalDateTime unRegisteredAt;
 
+    @NotNull
+    private User user;
+
     public static AccountDto fromEntity(Account account) {
         return AccountDto.builder()
-                .accountNumber(account.getAccountNumber())
                 .username(account.getUser().getUsername())
+                .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
+                .accountStatus(account.getAccountStatus())
                 .registeredAt(account.getRegisteredAt())
                 .unRegisteredAt(account.getUnRegisteredAt())
-                .accountStatus(account.getAccountStatus())
+                .user(account.getUser())
                 .build();
     }
 }

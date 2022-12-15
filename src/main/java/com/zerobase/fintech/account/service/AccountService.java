@@ -3,6 +3,7 @@ package com.zerobase.fintech.account.service;
 import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.dto.BalanceDto;
 import com.zerobase.fintech.account.dto.DepositWithdrawDto;
+import com.zerobase.fintech.account.dto.PeriodDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.entity.DepositWithdraw;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,5 +156,26 @@ public class AccountService {
 			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
 		}
 		return true;
+	}
+
+	public List<DepositWithdrawDto> periodTransaction(String accountNumber,
+	                                                  String accountPassword,
+	                                                  LocalDate startDt,
+	                                                  LocalDate endDt){
+
+		Account account = accountCheck(accountNumber, accountPassword);
+
+		LocalDateTime start = startDt.atTime(0,0,0);
+		LocalDateTime end = endDt.atTime(23,59,59);
+
+		List<DepositWithdraw> list = depositWithdrawRepository.findAllByAccountAndTransactionDateBetween(account, start, end)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.TRANSACTION_NOT_FOUND));
+
+		List<DepositWithdrawDto> dtoList = new ArrayList<>();
+		for (DepositWithdraw depositWithdraw : list) {
+			dtoList.add(DepositWithdrawDto.fromEntity(depositWithdraw));
+		}
+
+		return dtoList;
 	}
 }

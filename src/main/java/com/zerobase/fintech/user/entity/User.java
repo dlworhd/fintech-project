@@ -41,6 +41,9 @@ public class User {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     //별도의 테이블 생성,
     @ManyToMany
     @JoinTable(

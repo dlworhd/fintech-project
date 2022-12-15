@@ -2,6 +2,7 @@ package com.zerobase.fintech.user.service;
 
 import com.zerobase.fintech.user.dto.Register;
 import com.zerobase.fintech.user.entity.UserRole;
+import com.zerobase.fintech.user.entity.UserStatus;
 import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.auth.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
@@ -49,6 +50,7 @@ public class UserService {
                 .createdAt(LocalDateTime.now())
                 .role(UserRole.USER)
                 .authorities(Collections.singleton(authority))
+                .userStatus(UserStatus.ACTIVED)
                 .build();
 
         return userRepository.save(user);

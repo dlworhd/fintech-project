@@ -31,16 +31,15 @@ public class AdminController {
 				request.getUserStatus()), HttpStatus.OK);
 	}
 
-	//TODO: 유저 거래 취소 (이메일을 통한 수취인의 동의 필요 -> 수취인 로그인 후 계좌, 계좌 비밀번호까지 입력을 해야 되는 걸로?)
-	//TODO: 거래 내역 확인 (뷰 페이지를 통해서 페이징 처리 )
 	@GetMapping("/transactions")
 	public ResponseEntity<?> transactions(){
 		return new ResponseEntity<>(adminService.getTransactions(), HttpStatus.OK);
 	}
 
-
-	//TODO: 회원 전체 조회
-
+	@GetMapping("/users")
+	public ResponseEntity<?> getUsers(){
+		return new ResponseEntity<>(adminService.getUsers(), HttpStatus.OK);
+	}
 
 
 

@@ -10,6 +10,7 @@ import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
 import com.zerobase.fintech.account.type.AccountErrorCode;
 import com.zerobase.fintech.admin.dto.AccountStatusDto;
 import com.zerobase.fintech.admin.dto.UserStatusDto;
+import com.zerobase.fintech.user.dto.UserDto;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.entity.UserStatus;
 import com.zerobase.fintech.user.exception.UserException;
@@ -69,4 +70,17 @@ public class AdminService {
 
 		return dtoList;
 	}
+
+	public List<UserDto> getUsers(){
+		List<User> list = userRepository.findAll();
+		List<UserDto> dtoList = new ArrayList<>();
+		for (User user : list) {
+			UserDto userDto = UserDto.fromEntity(user);
+			dtoList.add(userDto);
+		}
+
+		return dtoList;
+	}
+
+
 }

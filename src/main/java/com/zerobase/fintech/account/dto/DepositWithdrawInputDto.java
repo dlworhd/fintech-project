@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 
-public class DepositInputDto {
+public class DepositWithdrawInputDto {
 
 	@Getter
 	@Setter
@@ -27,7 +27,7 @@ public class DepositInputDto {
 
 		@Min(10)
 		@Max(1000_000_000)
-		@NotNull(message = "입금 금액은 필수 항목입니다.")
+		@NotNull(message = "금액은 필수 항목입니다.")
 		public Long amount;
 	}
 

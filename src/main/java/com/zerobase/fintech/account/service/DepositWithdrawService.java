@@ -36,7 +36,7 @@ public class DepositWithdrawService {
 
 
 	@Transactional
-	public DepositInputDto.Response deposit(String username, String password, String accountNumber, String accountPassword, Long amount) {
+	public DepositWithdrawInputDto.Response deposit(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
 		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
@@ -45,7 +45,7 @@ public class DepositWithdrawService {
 		account.setModifiedAt(LocalDateTime.now());
 		Account savedAccount = accountRepository.save(account);
 
-		return DepositInputDto.Response.from(DepositWithdrawDto.fromEntity(
+		return DepositWithdrawInputDto.Response.from(DepositWithdrawDto.fromEntity(
 				depositWithdrawRepository.save(DepositWithdraw.builder()
 						.transactionDate(LocalDateTime.now())
 						.bankServiceType(BankServiceType.DEPOSIT)
@@ -58,7 +58,7 @@ public class DepositWithdrawService {
 	}
 
 	@Transactional
-	public WithdrawInputDto.Response withdraw(String username, String password, String accountNumber, String accountPassword, Long amount) {
+	public DepositWithdrawInputDto.Response withdraw(String username, String password, String accountNumber, String accountPassword, Long amount) {
 
 		// 유저 검토
 		Account account = accountByValidUser(username, password, accountNumber, accountPassword);
@@ -69,7 +69,7 @@ public class DepositWithdrawService {
 		account.setModifiedAt(LocalDateTime.now());
 		Account savedAccount = accountRepository.save(account);
 
-		return WithdrawInputDto.Response.from(DepositWithdrawDto.fromEntity(
+		return DepositWithdrawInputDto.Response.from(DepositWithdrawDto.fromEntity(
 				depositWithdrawRepository.save(DepositWithdraw.builder()
 						.transactionDate(LocalDateTime.now())
 						.bankServiceType(BankServiceType.WITHDRAWAL)
@@ -81,10 +81,10 @@ public class DepositWithdrawService {
 						.build())));
 	}
 
-	public TransferInputDto.Response remittance(String senderAccountNumber,
-	                                            String receiverAccountNumber,
-	                                            String accountPassword,
-	                                            Long amount
+	public TransferInputDto.Response transfer(String senderAccountNumber,
+	                                          String receiverAccountNumber,
+	                                          String accountPassword,
+	                                          Long amount
 	) {
 
 		Account senderAccount = accountService.accountCheck(senderAccountNumber, accountPassword);

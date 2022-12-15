@@ -1,8 +1,10 @@
 package com.zerobase.fintech.account.service;
 
 import com.zerobase.fintech.account.dto.AccountDto;
+import com.zerobase.fintech.account.dto.DepositWithdrawDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
+import com.zerobase.fintech.account.entity.DepositWithdraw;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
 import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -26,14 +30,16 @@ public class AccountService {
 
 	private final AccountRepository accountRepository;
 	private final UserRepository userRepository;
+	private final DepositWithdrawRepository depositWithdrawRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final UserService userService;
 
-	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, DepositWithdrawRepository depositWithdrawRepository) {
+	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, DepositWithdrawRepository depositWithdrawRepository, DepositWithdrawRepository depositWithdrawRepository1) {
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.userService = userService;
+		this.depositWithdrawRepository = depositWithdrawRepository1;
 	}
 
 	@Transactional
@@ -69,6 +75,22 @@ public class AccountService {
 		account.setUnRegisteredAt(LocalDateTime.now());
 
 		return AccountDto.fromEntity(accountRepository.save(account));
+	}
+
+	public List<DepositWithdrawDto> lookUpDepositWithdraw(String username, String password, String accountNumber, String accountPassword){
+		userCheck(username, password);
+		Account account = accountCheck(accountNumber, accountPassword);
+		List<DepositWithdraw> list = depositWithdrawRepository.findByAccount(account)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
+		List<DepositWithdrawDto> dtoList = new ArrayList<>();
+		for (DepositWithdraw depositWithdraw : list) {
+
+			DepositWithdrawDto depositWithdrawDto = DepositWithdrawDto.fromEntity(depositWithdraw);
+			depositWithdrawDto.setTransactionDate(LocalDateTime.now());
+			dtoList.add(depositWithdrawDto);
+		}
+		return dtoList;
 	}
 
 	private String generateAccountNumber() {

@@ -1,9 +1,12 @@
 package com.zerobase.fintech.admin.service;
 
+import com.zerobase.fintech.account.dto.DepositWithdrawDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
+import com.zerobase.fintech.account.entity.DepositWithdraw;
 import com.zerobase.fintech.account.exception.AccountException;
 import com.zerobase.fintech.account.repository.AccountRepository;
+import com.zerobase.fintech.account.repository.DepositWithdrawRepository;
 import com.zerobase.fintech.account.type.AccountErrorCode;
 import com.zerobase.fintech.admin.dto.AccountStatusDto;
 import com.zerobase.fintech.admin.dto.UserStatusDto;
@@ -17,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,6 +30,7 @@ public class AdminService {
 
 	private final AccountRepository accountRepository;
 	private final UserRepository userRepository;
+	private final DepositWithdrawRepository depositWithdrawRepository;
 
 	public AccountStatusDto.Response accountStatusChange(String accountNumber, String accountStatus){
 		Account account = accountRepository.findByAccountNumber(accountNumber)
@@ -51,5 +57,16 @@ public class AdminService {
 			user.setModifiedAt(LocalDateTime.now());
 			return UserStatusDto.Response.fromEntity(userRepository.save(user));
 		}
+	}
+
+	public List<DepositWithdrawDto> getTransactions(){
+		List<DepositWithdraw> list = depositWithdrawRepository.findAll();
+		List<DepositWithdrawDto> dtoList = new ArrayList<>();
+		for (DepositWithdraw depositWithdraw : list) {
+			DepositWithdrawDto depositWithdrawDto = DepositWithdrawDto.fromEntity(depositWithdraw);
+			dtoList.add(depositWithdrawDto);
+		}
+
+		return dtoList;
 	}
 }

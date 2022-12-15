@@ -2,6 +2,7 @@ package com.zerobase.fintech.account.service;
 
 import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.dto.DepositWithdrawDto;
+import com.zerobase.fintech.account.dto.InputInfoDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.entity.DepositWithdraw;
@@ -77,7 +78,7 @@ public class AccountService {
 		return AccountDto.fromEntity(accountRepository.save(account));
 	}
 
-	public List<DepositWithdrawDto> lookUpDepositWithdraw(String username, String password, String accountNumber, String accountPassword){
+	public List<DepositWithdrawDto> lookUpDepositWithdraw(String username, String password, String accountNumber, String accountPassword) {
 		userCheck(username, password);
 		Account account = accountCheck(accountNumber, accountPassword);
 		List<DepositWithdraw> list = depositWithdrawRepository.findByAccount(account)
@@ -91,6 +92,21 @@ public class AccountService {
 			dtoList.add(depositWithdrawDto);
 		}
 		return dtoList;
+	}
+
+
+	public List<AccountDto> getAccountList(String username, String password) {
+		User user = userCheck(username, password);
+		List<Account> accountList = accountRepository.findAllByUser(user)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
+		List<AccountDto> accounts = new ArrayList<>();
+		for (Account account : accountList) {
+			AccountDto accountDto = AccountDto.fromEntity(account);
+			accounts.add(accountDto);
+		}
+
+		return accounts;
 	}
 
 	private String generateAccountNumber() {

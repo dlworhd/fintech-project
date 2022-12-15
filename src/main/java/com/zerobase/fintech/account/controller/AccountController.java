@@ -4,6 +4,7 @@ import com.zerobase.fintech.account.dto.CreateAccountDto;
 import com.zerobase.fintech.account.dto.DeleteAccountDto;
 import com.zerobase.fintech.account.dto.InputInfoDto;
 import com.zerobase.fintech.account.service.AccountService;
+import com.zerobase.fintech.user.dto.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,14 @@ public class AccountController {
 
 
 	//TODO: 보유 계좌 조회
+	@GetMapping("/list")
+	public ResponseEntity<?> getAccounts(@RequestBody @Valid Login login){
+		return new ResponseEntity<>(accountService.getAccountList(
+				login.getUsername(),
+				login.getPassword()
+		), HttpStatus.OK);
+	}
+
 	//TODO: 잔액 조회
 
 

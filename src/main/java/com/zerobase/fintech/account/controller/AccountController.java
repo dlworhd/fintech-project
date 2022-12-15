@@ -41,10 +41,10 @@ public class AccountController {
 	//TODO: 계좌 입출금/송금 내역 조회
 	@GetMapping("/{accountNumber}")
 	public ResponseEntity<?> getDepositWithdraw(@RequestBody @Valid InputInfoDto inputInfoDto){
-		return new ResponseEntity<>(accountService.lookUpDepositWithdraw(inputInfoDto.username,
-				inputInfoDto.password,
-				inputInfoDto.accountNumber,
-				inputInfoDto.accountPassword
+		return new ResponseEntity<>(accountService.lookUpDepositWithdraw(inputInfoDto.getUsername(),
+				inputInfoDto.getPassword(),
+				inputInfoDto.getAccountNumber(),
+				inputInfoDto.getAccountPassword()
 		), HttpStatus.OK);
 	}
 
@@ -60,7 +60,13 @@ public class AccountController {
 	}
 
 	//TODO: 잔액 조회
-
-
-
+	@GetMapping("/balance")
+	public ResponseEntity<?> getAccounts(@RequestBody @Valid InputInfoDto inputInfoDto){
+		return new ResponseEntity<>(accountService.getBalance(
+				inputInfoDto.getUsername(),
+				inputInfoDto.getPassword(),
+				inputInfoDto.getAccountNumber(),
+				inputInfoDto.getAccountPassword()
+		), HttpStatus.OK);
+	}
 }

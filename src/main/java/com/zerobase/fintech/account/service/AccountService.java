@@ -1,6 +1,7 @@
 package com.zerobase.fintech.account.service;
 
 import com.zerobase.fintech.account.dto.AccountDto;
+import com.zerobase.fintech.account.dto.BalanceDto;
 import com.zerobase.fintech.account.dto.DepositWithdrawDto;
 import com.zerobase.fintech.account.dto.InputInfoDto;
 import com.zerobase.fintech.account.entity.Account;
@@ -107,6 +108,14 @@ public class AccountService {
 		}
 
 		return accounts;
+	}
+
+	public BalanceDto getBalance(String username, String password, String accountNumber, String accountPassword){
+		userCheck(username, password);
+		Account account = accountCheck(accountNumber, accountPassword);
+		BalanceDto balanceDto = BalanceDto.fromEntity(account);
+		balanceDto.setNowDate(LocalDateTime.now());
+		return balanceDto;
 	}
 
 	private String generateAccountNumber() {

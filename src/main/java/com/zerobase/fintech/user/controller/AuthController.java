@@ -1,9 +1,9 @@
 package com.zerobase.fintech.user.controller;
 
 import com.zerobase.fintech.user.dto.Login;
-import com.zerobase.fintech.jwt.config.JwtFilter;
-import com.zerobase.fintech.jwt.config.TokenProvider;
-import com.zerobase.fintech.jwt.dto.TokenDto;
+import com.zerobase.fintech.auth.config.JwtFilter;
+import com.zerobase.fintech.auth.config.TokenProvider;
+import com.zerobase.fintech.auth.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

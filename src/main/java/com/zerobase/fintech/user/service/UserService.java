@@ -1,13 +1,13 @@
 package com.zerobase.fintech.user.service;
 
-import com.zerobase.fintech.user.entity.UserRole;
 import com.zerobase.fintech.user.dto.Register;
+import com.zerobase.fintech.user.entity.UserRole;
 import com.zerobase.fintech.user.exception.UserException;
-import com.zerobase.fintech.jwt.entity.Authority;
+import com.zerobase.fintech.auth.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
 import com.zerobase.fintech.user.type.UserErrorCode;
-import com.zerobase.fintech.jwt.util.SecurityUtil;
+import com.zerobase.fintech.auth.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

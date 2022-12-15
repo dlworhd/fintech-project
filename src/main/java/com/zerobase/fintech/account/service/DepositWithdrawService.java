@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -90,7 +89,7 @@ public class DepositWithdrawService {
 
 		Account senderAccount = accountService.accountCheck(senderAccountNumber, accountPassword);
 
-		if (senderAccount.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED) {
+		if (senderAccount.getAccountStatus() == AccountStatus.UNREGISTERED) {
 			throw new AccountException(AccountErrorCode.UNREGISTERED_ACCOUNT);
 		}
 
@@ -142,7 +141,7 @@ public class DepositWithdrawService {
 		Account account = accountRepository.findByAccountNumber(accountNumber)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-		if (account.getAccountStatus() == AccountStatus.ACCOUNT_UNREGISTERED) {
+		if (account.getAccountStatus() == AccountStatus.UNREGISTERED) {
 			throw new AccountException(AccountErrorCode.UNREGISTERED_ACCOUNT);
 		}
 

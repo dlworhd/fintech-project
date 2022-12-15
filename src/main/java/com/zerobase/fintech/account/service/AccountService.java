@@ -3,7 +3,6 @@ package com.zerobase.fintech.account.service;
 import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.dto.BalanceDto;
 import com.zerobase.fintech.account.dto.DepositWithdrawDto;
-import com.zerobase.fintech.account.dto.InputInfoDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.entity.DepositWithdraw;
@@ -52,7 +51,7 @@ public class AccountService {
 
 		return AccountDto.fromEntity(accountRepository.save(Account.builder()
 				.password(passwordEncoder.encode(accountPassword))
-				.accountStatus(AccountStatus.ACCOUNT_REGISTERED)
+				.accountStatus(AccountStatus.REGISTERED)
 				.registeredAt(LocalDateTime.now())
 				.accountNumber(generateAccountNumber())
 				.balance(initialBalance)
@@ -73,7 +72,7 @@ public class AccountService {
 		// 이미 해지된 계좌인 경우 예외 발생
 		isRegisteredAccount(account);
 
-		account.setAccountStatus(AccountStatus.ACCOUNT_UNREGISTERED);
+		account.setAccountStatus(AccountStatus.UNREGISTERED);
 		account.setUnRegisteredAt(LocalDateTime.now());
 
 		return AccountDto.fromEntity(accountRepository.save(account));
@@ -151,7 +150,7 @@ public class AccountService {
 	}
 
 	private boolean isRegisteredAccount(Account account) {
-		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
+		if (account.getAccountStatus() != AccountStatus.REGISTERED) {
 			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
 		}
 		return true;

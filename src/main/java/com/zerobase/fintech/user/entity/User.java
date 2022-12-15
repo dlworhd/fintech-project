@@ -1,6 +1,6 @@
 package com.zerobase.fintech.user.entity;
 
-import com.zerobase.fintech.jwt.entity.Authority;
+import com.zerobase.fintech.auth.entity.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

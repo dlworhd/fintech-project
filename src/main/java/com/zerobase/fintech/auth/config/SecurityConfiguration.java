@@ -1,9 +1,9 @@
-package com.zerobase.fintech.user.config;
+package com.zerobase.fintech.auth.config;
 
-import com.zerobase.fintech.jwt.config.JwtAccessDeniedHandler;
-import com.zerobase.fintech.jwt.config.JwtAuthenticationEntryPoint;
-import com.zerobase.fintech.jwt.config.JwtSecurityConfig;
-import com.zerobase.fintech.jwt.config.TokenProvider;
+import com.zerobase.fintech.auth.config.JwtAccessDeniedHandler;
+import com.zerobase.fintech.auth.config.JwtAuthenticationEntryPoint;
+import com.zerobase.fintech.auth.config.JwtSecurityConfig;
+import com.zerobase.fintech.auth.config.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

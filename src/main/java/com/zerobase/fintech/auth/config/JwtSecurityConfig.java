@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt.config;
+package com.zerobase.fintech.auth.config;
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

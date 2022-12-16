@@ -27,7 +27,7 @@ public class UserDto {
 
 	private String userStatus;
 
-	public static UserDto fromEntity(User user){
+	public static UserDto fromEntity(User user) {
 		return UserDto.builder().username(user.getUsername())
 				.id(user.getId())
 				.password(user.getPassword())
@@ -38,5 +38,24 @@ public class UserDto {
 				.modifiedAt(user.getModifiedAt())
 				.userStatus(user.getUserStatus().getValue())
 				.build();
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class Response {
+
+		private String username;
+		private String email;
+		private LocalDateTime createDt;
+
+		public static Response fromEntity(User user) {
+			return Response.builder()
+					.username(user.getUsername())
+					.email(user.getEmail())
+					.createDt(user.getCreatedAt())
+					.build();
+		}
 	}
 }

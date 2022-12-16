@@ -40,7 +40,7 @@ public class AccountController {
 				request.getAccountPassword())), HttpStatus.OK);
 	}
 
-	@GetMapping("/{accountNumber}")
+	@GetMapping("/transactions")
 	public ResponseEntity<?> getDepositWithdraw(@RequestBody @Valid InputInfoDto inputInfoDto) {
 		return new ResponseEntity<>(accountService.lookUpDepositWithdraw(inputInfoDto.getUsername(),
 				inputInfoDto.getPassword(),

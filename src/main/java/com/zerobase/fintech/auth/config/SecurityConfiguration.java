@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않기 때문에 설정함
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/user/login", "/user/register").permitAll()
+                .antMatchers("/", "/user/login", "/user/register","/user/email-auth").permitAll()
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/account/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")

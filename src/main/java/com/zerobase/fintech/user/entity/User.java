@@ -29,6 +29,7 @@ public class User {
     @Column(columnDefinition = "BINARY(16)", name = "id")
     private UUID id;
 
+    private String email;
     private String username;
     private String password;
     private String name;

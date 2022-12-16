@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -13,6 +14,10 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @Builder
 public class Register {
+
+    @Email
+    @NotBlank(message = "이메일 형식에 맞게 입력해주세요.")
+    private String email;
 
     @NotBlank(message = "아이디는 6~20자 영문, 숫자를 포함합니다.")
     @Pattern(regexp = "^[a-z]+[a-z0-9]{5,19}$")

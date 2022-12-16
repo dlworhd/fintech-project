@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum UserStatus {
 
 	ACTIVED("ACTIVED"),
+	UNACTIVED("UNACTIVED"),
 	BLOCKED("BLOCKED");
 
 	String value;

@@ -9,15 +9,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/user/email-auth")
+    public ResponseEntity<?> auth(String id){
+        return new ResponseEntity<>(userService.idCheck(UUID.fromString(id)), HttpStatus.OK);
+    }
+
     @PostMapping("/user/register")
-    public ResponseEntity<User> register(@RequestBody @Valid Register register) {
-        return new ResponseEntity(userService.register(register), HttpStatus.OK);
+    public ResponseEntity<?> register(@RequestBody @Valid Register register) {
+        userService.register(register);
+        return ResponseEntity.ok("이메일 인증을 확인해주세요.");
     }
 
     @GetMapping("/user/info")

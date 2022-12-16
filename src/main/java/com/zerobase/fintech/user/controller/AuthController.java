@@ -4,6 +4,7 @@ import com.zerobase.fintech.user.dto.Login;
 import com.zerobase.fintech.auth.config.JwtFilter;
 import com.zerobase.fintech.auth.config.TokenProvider;
 import com.zerobase.fintech.auth.dto.TokenDto;
+import com.zerobase.fintech.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,16 +25,21 @@ public class AuthController {
 
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final UserService userService;
 
-	public AuthController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+	public AuthController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService) {
 		this.tokenProvider = tokenProvider;
 		this.authenticationManagerBuilder = authenticationManagerBuilder;
+		this.userService = userService;
 	}
 
 	// 1. authenticationToken을 이용해서 Authentication 객체를 생성하기 위해 authenticate()가 실행
 	// 2. authenticate()가 실행되면서, loadUSerByUsername()도 실행됨
 	@PostMapping("/user/login")
 	public ResponseEntity<TokenDto> authorize(@RequestBody @Valid Login login) {
+
+		// 이메일 인증된 계정 Check
+		userService.emailCheck(login.getUsername());
 
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
 

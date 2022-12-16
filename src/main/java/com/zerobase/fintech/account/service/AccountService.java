@@ -37,12 +37,17 @@ public class AccountService {
 	private final PasswordEncoder passwordEncoder;
 	private final UserService userService;
 
-	public AccountService(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService, DepositWithdrawRepository depositWithdrawRepository, DepositWithdrawRepository depositWithdrawRepository1) {
+	public AccountService(AccountRepository accountRepository,
+	                      UserRepository userRepository,
+	                      PasswordEncoder passwordEncoder,
+	                      UserService userService,
+	                      DepositWithdrawRepository depositWithdrawRepository) {
+
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.userService = userService;
-		this.depositWithdrawRepository = depositWithdrawRepository1;
+		this.depositWithdrawRepository = depositWithdrawRepository;
 	}
 
 	@Transactional
@@ -80,11 +85,17 @@ public class AccountService {
 		return AccountDto.fromEntity(accountRepository.save(account));
 	}
 
-	public List<DepositWithdrawDto> lookUpDepositWithdraw(String username, String password, String accountNumber, String accountPassword) {
+	public List<DepositWithdrawDto> lookUpDepositWithdraw(String username,
+	                                                      String password,
+	                                                      String accountNumber,
+	                                                      String accountPassword) {
+		
 		userCheck(username, password);
 		Account account = accountCheck(accountNumber, accountPassword);
 		List<DepositWithdraw> list = depositWithdrawRepository.findByAccount(account)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
+
 
 		List<DepositWithdrawDto> dtoList = new ArrayList<>();
 		for (DepositWithdraw depositWithdraw : list) {
@@ -95,6 +106,9 @@ public class AccountService {
 		}
 		return dtoList;
 	}
+
+	
+
 
 
 	public List<AccountDto> getAccountList(String username, String password) {

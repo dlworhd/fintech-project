@@ -13,30 +13,32 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @Component("userDetailsService")
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    public CustomUserDetailService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-    // username을 가지고 DB에서 정보를 가져옴
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOneWithAuthoritiesByUsername(username).map(user -> createUser(username, user)).orElseThrow(()
-                -> new UsernameNotFoundException(username + " -> DB에서 찾을 수 없습니다."));
-    }
+	public CustomUserDetailService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
-    // 1. 로그인시에 DB에서 유저 정보와 권한 정보를 가져옴
-    // 2. 해당 정보를 기반으로 userdetails.User 객체를 생성해서 리턴
-    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-                .collect(Collectors.toList());
+	// username을 가지고 DB에서 정보를 가져옴
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return userRepository.findOneWithAuthoritiesByUsername(username).map(user -> createUser(username, user)).orElseThrow(()
+				-> new UsernameNotFoundException(username + " -> DB에서 찾을 수 없습니다."));
+	}
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
-    }
+	// 1. 로그인시에 DB에서 유저 정보와 권한 정보를 가져옴
+	// 2. 해당 정보를 기반으로 userdetails.User 객체를 생성해서 리턴
+	private org.springframework.security.core.userdetails.User createUser(String username, User user) {
+		List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+				.collect(Collectors.toList());
+
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+	}
 
 }

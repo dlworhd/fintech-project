@@ -24,6 +24,7 @@ public class DepositWithdrawDto {
 				.accountNumber(depositWithdraw.getAccount().getAccountNumber())
 				.bankServiceType(depositWithdraw.getBankServiceType())
 				.balanceSnapshot(depositWithdraw.getBalanceSnapshot())
+				.transactionDate(depositWithdraw.getTransactionDate())
 				.amount(depositWithdraw.getAmount())
 				.build();
 	}

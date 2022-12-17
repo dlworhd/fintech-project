@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt.entity;
+package com.zerobase.fintech.auth.entity;
 
 import lombok.*;
 import javax.persistence.Column;

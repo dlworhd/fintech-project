@@ -1,6 +1,6 @@
 package com.zerobase.fintech.user.entity;
 
-import com.zerobase.fintech.jwt.entity.Authority;
+import com.zerobase.fintech.auth.entity.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,6 +40,9 @@ public class User {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     //별도의 테이블 생성,
     @ManyToMany

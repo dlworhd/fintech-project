@@ -1,4 +1,4 @@
-package com.zerobase.fintech.jwt.config;
+package com.zerobase.fintech.auth.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

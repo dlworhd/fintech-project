@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AccountStatus {
 
-    ACCOUNT_REGISTERED("REGISTERED"),
-    ACCOUNT_UNREGISTERED("UNREGISTERED");
+    REGISTERED("REGISTERED"),
+    UNREGISTERED("UNREGISTERED"),
+    BLOCKED("BLOCKED");
 
     private final String value;
+
+
 }

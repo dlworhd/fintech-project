@@ -3,7 +3,7 @@ package com.zerobase.fintech.account.service;
 import com.zerobase.fintech.account.dto.AccountDto;
 import com.zerobase.fintech.account.dto.BalanceDto;
 import com.zerobase.fintech.account.dto.DepositWithdrawDto;
-import com.zerobase.fintech.account.dto.InputInfoDto;
+import com.zerobase.fintech.account.dto.PeriodDto;
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.account.entity.AccountStatus;
 import com.zerobase.fintech.account.entity.DepositWithdraw;
@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class AccountService {
 
 		return AccountDto.fromEntity(accountRepository.save(Account.builder()
 				.password(passwordEncoder.encode(accountPassword))
-				.accountStatus(AccountStatus.ACCOUNT_REGISTERED)
+				.accountStatus(AccountStatus.REGISTERED)
 				.registeredAt(LocalDateTime.now())
 				.accountNumber(generateAccountNumber())
 				.balance(initialBalance)
@@ -73,7 +74,7 @@ public class AccountService {
 		// 이미 해지된 계좌인 경우 예외 발생
 		isRegisteredAccount(account);
 
-		account.setAccountStatus(AccountStatus.ACCOUNT_UNREGISTERED);
+		account.setAccountStatus(AccountStatus.UNREGISTERED);
 		account.setUnRegisteredAt(LocalDateTime.now());
 
 		return AccountDto.fromEntity(accountRepository.save(account));
@@ -110,7 +111,7 @@ public class AccountService {
 		return accounts;
 	}
 
-	public BalanceDto getBalance(String username, String password, String accountNumber, String accountPassword){
+	public BalanceDto getBalance(String username, String password, String accountNumber, String accountPassword) {
 		userCheck(username, password);
 		Account account = accountCheck(accountNumber, accountPassword);
 		BalanceDto balanceDto = BalanceDto.fromEntity(account);
@@ -151,9 +152,30 @@ public class AccountService {
 	}
 
 	private boolean isRegisteredAccount(Account account) {
-		if (account.getAccountStatus() != AccountStatus.ACCOUNT_REGISTERED) {
+		if (account.getAccountStatus() != AccountStatus.REGISTERED) {
 			throw new AccountException(AccountErrorCode.ALREADY_UNREGISTERED_ACCOUNT);
 		}
 		return true;
+	}
+
+	public List<DepositWithdrawDto> periodTransaction(String accountNumber,
+	                                                  String accountPassword,
+	                                                  LocalDate startDt,
+	                                                  LocalDate endDt) {
+
+		Account account = accountCheck(accountNumber, accountPassword);
+
+		LocalDateTime start = startDt.atTime(0, 0, 0);
+		LocalDateTime end = endDt.atTime(23, 59, 59);
+
+		List<DepositWithdraw> list = depositWithdrawRepository.findAllByAccountAndTransactionDateBetween(account, start, end)
+				.orElseThrow(() -> new AccountException(AccountErrorCode.TRANSACTION_NOT_FOUND));
+
+		List<DepositWithdrawDto> dtoList = new ArrayList<>();
+		for (DepositWithdraw depositWithdraw : list) {
+			dtoList.add(DepositWithdrawDto.fromEntity(depositWithdraw));
+		}
+
+		return dtoList;
 	}
 }

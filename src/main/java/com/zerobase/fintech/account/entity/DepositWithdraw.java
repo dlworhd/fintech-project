@@ -1,5 +1,6 @@
 package com.zerobase.fintech.account.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.fintech.account.type.BankServiceType;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

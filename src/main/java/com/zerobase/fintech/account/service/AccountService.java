@@ -95,8 +95,6 @@ public class AccountService {
 		List<DepositWithdraw> list = depositWithdrawRepository.findByAccount(account)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-
-
 		List<DepositWithdrawDto> dtoList = new ArrayList<>();
 		for (DepositWithdraw depositWithdraw : list) {
 
@@ -106,9 +104,6 @@ public class AccountService {
 		}
 		return dtoList;
 	}
-
-	
-
 
 
 	public List<AccountDto> getAccountList(String username, String password) {

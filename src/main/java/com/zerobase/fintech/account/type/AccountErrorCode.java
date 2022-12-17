@@ -21,5 +21,6 @@ public enum AccountErrorCode {
 
 
     private final String description;
+
 }
 

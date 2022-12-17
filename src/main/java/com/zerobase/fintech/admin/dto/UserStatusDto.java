@@ -2,12 +2,14 @@ package com.zerobase.fintech.admin.dto;
 
 import com.zerobase.fintech.account.entity.Account;
 import com.zerobase.fintech.user.entity.User;
+import com.zerobase.fintech.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -20,8 +22,8 @@ public class UserStatusDto {
 		@NotBlank(message = "아이디는 필수 항목입니다.")
 		public String username;
 
-		@NotBlank(message = "변경할 상태를 직접 입력해주세요 >> ACTIVED, BLOCKED")
-		public String userStatus;
+		@NotNull(message = "변경할 상태를 직접 입력해주세요 >> ACTIVED, BLOCKED")
+		public UserStatus userStatus;
 	}
 
 	@Getter
@@ -30,12 +32,12 @@ public class UserStatusDto {
 	public static class Response {
 
 		public String username;
-		public String userStatus;
+		public UserStatus userStatus;
 
 		public static Response fromEntity(User user) {
 			return Response.builder()
 					.username(user.getUsername())
-					.userStatus(user.getUserStatus().getValue()).
+					.userStatus(user.getUserStatus()).
 					build();
 		}
 	}

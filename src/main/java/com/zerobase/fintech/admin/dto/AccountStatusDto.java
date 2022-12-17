@@ -5,6 +5,7 @@ import com.zerobase.fintech.account.entity.AccountStatus;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -17,8 +18,8 @@ public class AccountStatusDto {
 		@NotBlank(message = "계좌번호는 필수 항목입니다.")
 		public String accountNumber;
 
-		@NotBlank(message = "변경할 상태를 직접 입력해주세요 >> REGISTERED, UNREGISTERED, BLOCKED")
-		public String accountStatus;
+		@NotNull(message = "변경할 상태를 직접 입력해주세요 >> REGISTERED, UNREGISTERED, BLOCKED")
+		public AccountStatus accountStatus;
 	}
 
 	@Getter

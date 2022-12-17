@@ -69,14 +69,10 @@ public class UserService {
 		User savedUser = userRepository.save(user);
 		String email = savedUser.getEmail();
 
-		mailComponent.sendMail(email, MailMessage.EMAIL_AUTH_MESSAGE,setMessage(savedUser.getId()));
+		mailComponent.sendMail(email, MailMessage.EMAIL_AUTH_MESSAGE,MailMessage.setContentMessage(user.getId()));
 
 	}
 
-	private String setMessage(UUID id){
-		return "<p>아래 링크를 클릭하셔서 가입을 완료하세요</p>" +
-				"<div><a href='http://localhost:8080/user/email-auth?id=" + id +"'>인증</a></div>";
-	}
 
 	//username을 파라미터로 받아서 어떤 username이든 객체를 바로바로 가져올 수 있게 만듦
 	public Optional<User> getUserWithAuthorities(String username) {

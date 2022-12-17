@@ -33,34 +33,35 @@ public class AdminService {
 	private final UserRepository userRepository;
 	private final DepositWithdrawRepository depositWithdrawRepository;
 
-	public AccountStatusDto.Response accountStatusChange(String accountNumber, String accountStatus){
+	public AccountStatusDto.Response accountStatusChange(String accountNumber, AccountStatus accountStatus) {
 		Account account = accountRepository.findByAccountNumber(accountNumber)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-		if(account.getAccountStatus().getValue().equals(accountStatus)){
+		//TODO: enum converter 구현
+		if (account.getAccountStatus().equals(accountStatus)) {
 			throw new AccountException(AccountErrorCode.OVERLAP_STATUS);
 		} else {
-			account.setAccountStatus(AccountStatus.valueOf(accountStatus));
+			account.setAccountStatus(accountStatus);
 			account.setModifiedAt(LocalDateTime.now());
 			Account savedAccount = accountRepository.save(account);
 			return AccountStatusDto.Response.fromEntity(savedAccount);
 		}
 	}
 
-	public UserStatusDto.Response userStatusChange(String username, String userStatus){
+	public UserStatusDto.Response userStatusChange(String username, UserStatus userStatus) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-		if(user.getUserStatus().getValue().equals(userStatus)){
+		if (user.getUserStatus().getValue().equals(userStatus)) {
 			throw new UserException(UserErrorCode.OVERLAP_STATUS);
 		} else {
-			user.setUserStatus(UserStatus.valueOf(userStatus));
+			user.setUserStatus(userStatus);
 			user.setModifiedAt(LocalDateTime.now());
 			return UserStatusDto.Response.fromEntity(userRepository.save(user));
 		}
 	}
 
-	public List<DepositWithdrawDto> getTransactions(){
+	public List<DepositWithdrawDto> getTransactions() {
 		List<DepositWithdraw> list = depositWithdrawRepository.findAll();
 		List<DepositWithdrawDto> dtoList = new ArrayList<>();
 		for (DepositWithdraw depositWithdraw : list) {
@@ -71,7 +72,7 @@ public class AdminService {
 		return dtoList;
 	}
 
-	public List<UserDto> getUsers(){
+	public List<UserDto> getUsers() {
 		List<User> list = userRepository.findAll();
 		List<UserDto> dtoList = new ArrayList<>();
 		for (User user : list) {
@@ -81,6 +82,5 @@ public class AdminService {
 
 		return dtoList;
 	}
-
 
 }

@@ -120,7 +120,7 @@ public class AccountService {
 		return accounts;
 	}
 
-	public BalanceDto getBalance(String username, String password, String accountNumber, String accountPassword){
+	public BalanceDto getBalance(String username, String password, String accountNumber, String accountPassword) {
 		userCheck(username, password);
 		Account account = accountCheck(accountNumber, accountPassword);
 		BalanceDto balanceDto = BalanceDto.fromEntity(account);
@@ -170,12 +170,12 @@ public class AccountService {
 	public List<DepositWithdrawDto> periodTransaction(String accountNumber,
 	                                                  String accountPassword,
 	                                                  LocalDate startDt,
-	                                                  LocalDate endDt){
+	                                                  LocalDate endDt) {
 
 		Account account = accountCheck(accountNumber, accountPassword);
 
-		LocalDateTime start = startDt.atTime(0,0,0);
-		LocalDateTime end = endDt.atTime(23,59,59);
+		LocalDateTime start = startDt.atTime(0, 0, 0);
+		LocalDateTime end = endDt.atTime(23, 59, 59);
 
 		List<DepositWithdraw> list = depositWithdrawRepository.findAllByAccountAndTransactionDateBetween(account, start, end)
 				.orElseThrow(() -> new AccountException(AccountErrorCode.TRANSACTION_NOT_FOUND));

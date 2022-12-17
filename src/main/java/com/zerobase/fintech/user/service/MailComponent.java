@@ -1,6 +1,7 @@
 package com.zerobase.fintech.user.service;
 
 import com.zerobase.fintech.user.entity.User;
+import com.zerobase.fintech.user.type.MailMessage;
 import lombok.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,7 +19,7 @@ public class MailComponent {
 
 	private final JavaMailSender javaMailSender;
 
-	public boolean sendMail(String mail, String subject, String text) {
+	public boolean sendMail(String mail, MailMessage message, String text) {
 		boolean result = false;
 
 		//HTML로 메세지 보내는 로직
@@ -27,7 +28,7 @@ public class MailComponent {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 				mimeMessageHelper.setTo(mail);
-				mimeMessageHelper.setSubject(subject);
+				mimeMessageHelper.setSubject(message.getValue());
 				mimeMessageHelper.setText(text, true);
 			}
 		};

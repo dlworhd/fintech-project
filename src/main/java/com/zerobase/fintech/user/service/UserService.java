@@ -7,6 +7,7 @@ import com.zerobase.fintech.user.exception.UserException;
 import com.zerobase.fintech.auth.entity.Authority;
 import com.zerobase.fintech.user.entity.User;
 import com.zerobase.fintech.user.repository.UserRepository;
+import com.zerobase.fintech.user.type.MailMessage;
 import com.zerobase.fintech.user.type.UserErrorCode;
 import com.zerobase.fintech.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,7 @@ public class UserService {
 		User savedUser = userRepository.save(user);
 		String email = savedUser.getEmail();
 
-		mailComponent.sendMail(email, "인증 메일이 도착했습니다.",setMessage(savedUser.getId()));
+		mailComponent.sendMail(email, MailMessage.EMAIL_AUTH_MESSAGE,setMessage(savedUser.getId()));
 
 	}
 
@@ -107,4 +108,5 @@ public class UserService {
 
 		return UserDto.Response.fromEntity(savedUser);
 	}
+
 }

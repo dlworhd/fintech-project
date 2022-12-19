@@ -19,10 +19,6 @@ public class Transfer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "id")
-	private DepositWithdraw depositWithdraw;
-
 	private String senderName;
 	private String receiverName;
 

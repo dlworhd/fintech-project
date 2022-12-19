@@ -24,6 +24,7 @@ public class Account {
 	private String accountNumber;
 
 	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Enumerated(EnumType.STRING)

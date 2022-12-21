@@ -61,7 +61,7 @@ public class AccountController {
 
 	// 잔액 확인
 	@GetMapping("/balance")
-	public ResponseEntity<?> accountBalance(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
+	public ResponseEntity<?> balance(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
 		return new ResponseEntity<>(accountService.getBalance(
 				identifyAccountDto.getUsername(),
 				identifyAccountDto.getPassword(),
@@ -72,7 +72,7 @@ public class AccountController {
 
 	// 기간 거래 조회
 	@PostMapping("/period")
-	public ResponseEntity<?> recentTransactionHistoriesByPeriod(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
+	public ResponseEntity<?> recentTransactionHistoriesBetweenPeriod(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
 		return new ResponseEntity<>(accountService.periodTransaction(
 				request.getAccountNumber(),
 				request.getAccountPassword(),
@@ -114,4 +114,5 @@ public class AccountController {
 				request.getAmount(),
 				request.getBankServiceType()), HttpStatus.OK);
 	}
+
 }

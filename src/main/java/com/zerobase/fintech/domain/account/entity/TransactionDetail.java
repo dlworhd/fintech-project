@@ -16,7 +16,7 @@ public class TransactionDetail {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "transfer_id")
+	@Column(name = "id")
 	private Long id;
 
 	private String senderName;

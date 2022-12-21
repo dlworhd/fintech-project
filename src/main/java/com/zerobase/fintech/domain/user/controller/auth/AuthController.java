@@ -15,12 +15,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @Slf4j
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
 	private final TokenProvider tokenProvider;
@@ -35,7 +37,7 @@ public class AuthController {
 
 	// 1. authenticationToken을 이용해서 Authentication 객체를 생성하기 위해 authenticate()가 실행
 	// 2. authenticate()가 실행되면서, loadUSerByUsername()도 실행됨
-	@PostMapping("/user/login")
+	@PostMapping("/login")
 	public ResponseEntity<TokenDto> authorize(@RequestBody @Valid Login login) {
 
 		// 이메일 인증된 계정 Check

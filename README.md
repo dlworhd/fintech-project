@@ -7,9 +7,10 @@
 
 2. 어플리케이션 구조
 
+<img width="100%" src="https://user-images.githubusercontent.com/102597172/208916279-a55d0f8d-0959-4853-a0fc-12cc28f675f2.png">
 
 
-<img width="100%" src="https://user-images.githubusercontent.com/102597172/208912982-c73543ce-38e3-4081-8cf3-0853ea1b70b8.png">
+
 
 
 3. 기능 구현

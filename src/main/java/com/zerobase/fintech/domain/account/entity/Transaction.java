@@ -25,7 +25,7 @@ public class Transaction {
 	private Account account;
 
 	@OneToOne
-	@JoinColumn(name = "transfer_id")
+	@JoinColumn(name = "transaction_detail_id")
 	private TransactionDetail transactionDetail;
 
 	@Enumerated(EnumType.STRING)

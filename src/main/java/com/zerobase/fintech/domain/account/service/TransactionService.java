@@ -2,6 +2,7 @@ package com.zerobase.fintech.domain.account.service;
 
 import com.zerobase.fintech.domain.account.dto.transaction.DepositWithdrawDto;
 import com.zerobase.fintech.domain.account.dto.transaction.ResultDto;
+import com.zerobase.fintech.domain.account.dto.transaction.TransferDto;
 import com.zerobase.fintech.domain.account.entity.Account;
 import com.zerobase.fintech.domain.account.entity.Transaction;
 import com.zerobase.fintech.domain.account.entity.TransactionDetail;
@@ -58,7 +59,7 @@ public class TransactionService {
 			throw new AccountException(AccountErrorCode.NO_BANK_SERVICE_TYPE);
 		}
 
-		return DepositWithdrawDto.Response.from(ResultDto.depositWithdrawFromEntity(
+		return DepositWithdrawDto.Response.depositWithdrawFrom(ResultDto.fromEntity(
 				transactionRepository.save(Transaction.builder()
 						.transactionDate(LocalDateTime.now())
 						.bankServiceType(bankServiceType)
@@ -70,11 +71,12 @@ public class TransactionService {
 						.build())));
 	}
 
-	public ResultDto transfer(String senderAccountNumber,
-	                          String receiverAccountNumber,
-	                          String accountPassword,
-	                          Long amount,
-	                          BankServiceType bankServiceType
+	@Transactional
+	public TransferDto.Response transfer(String senderAccountNumber,
+	                                     String receiverAccountNumber,
+	                                     String accountPassword,
+	                                     Long amount,
+	                                     BankServiceType bankServiceType
 	) {
 
 		if (!bankServiceType.equals(BankServiceType.TRANSFER)) {
@@ -117,7 +119,7 @@ public class TransactionService {
 
 		Transaction savedTransaction = transactionRepository.save(transaction);
 
-		return ResultDto.transferFromEntity(savedTransaction);
+		return TransferDto.Response.transferFrom(ResultDto.fromEntity(savedTransaction));
 	}
 
 	private void validBalance(Account account, Long amount) {

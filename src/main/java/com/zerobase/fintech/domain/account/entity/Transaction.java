@@ -25,7 +25,7 @@ public class Transaction {
 	private Account account;
 
 	@OneToOne
-	@JoinColumn(name = "transactionDetail_id")
+	@JoinColumn(name = "transfer_id")
 	private TransactionDetail transactionDetail;
 
 	@Enumerated(EnumType.STRING)
@@ -33,7 +33,6 @@ public class Transaction {
 
 	@CreatedDate
 	private LocalDateTime createdAt;
-
 
 	@LastModifiedDate
 	private LocalDateTime modifiedAt;

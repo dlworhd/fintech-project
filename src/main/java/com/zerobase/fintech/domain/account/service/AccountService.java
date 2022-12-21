@@ -2,6 +2,7 @@ package com.zerobase.fintech.domain.account.service;
 
 import com.zerobase.fintech.domain.account.dto.account.AccountDto;
 import com.zerobase.fintech.domain.account.dto.account.ManageAccountDto;
+import com.zerobase.fintech.domain.account.dto.transaction.DepositWithdrawDto;
 import com.zerobase.fintech.domain.account.dto.transaction.ResultDto;
 import com.zerobase.fintech.domain.account.entity.Account;
 import com.zerobase.fintech.domain.account.entity.Transaction;
@@ -17,6 +18,8 @@ import com.zerobase.fintech.domain.user.repository.UserRepository;
 import com.zerobase.fintech.domain.user.service.user.UserService;
 import com.zerobase.fintech.domain.user.type.UserErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,26 +87,26 @@ public class AccountService {
 		return ManageAccountDto.DeleteResponse.from(AccountDto.fromEntity(accountRepository.save(account)));
 	}
 
-	public List<ResultDto> lookUpDepositWithdraw(String username,
-	                                             String password,
-	                                             String accountNumber,
-	                                             String accountPassword) {
-
+	public List<DepositWithdrawDto.Response> recentTransactionHistoriesByUser(String username,
+	                                                                    String password,
+	                                                                    String accountNumber,
+	                                                                    String accountPassword) {
 		userCheck(username, password);
 		Account account = accountCheck(accountNumber, accountPassword);
-		List<Transaction> list = transactionRepository.findByAccount(account)
-				.orElseThrow(() -> new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+		PageRequest pageRequest = PageRequest.of(0, 10);
+		if(transactionRepository.findAllByAccountOrderByTransactionDateDesc(account,pageRequest) == null){
+			throw new AccountException(AccountErrorCode.ACCOUNT_NOT_FOUND);
+		}
+		Page<Transaction> list = transactionRepository.findAllByAccountOrderByTransactionDateDesc(account,pageRequest);
 
-		List<ResultDto> dtoList = new ArrayList<>();
+		List<DepositWithdrawDto.Response> dtoList = new ArrayList<>();
 		for (Transaction transaction : list) {
-
-			ResultDto resultDto = ResultDto.transferFromEntity(transaction);
-			resultDto.setTransactionDate(LocalDateTime.now());
-			dtoList.add(resultDto);
+			DepositWithdrawDto.Response result =
+					DepositWithdrawDto.Response.depositWithdrawFrom(ResultDto.fromEntity(transaction));
+			dtoList.add(result);
 		}
 		return dtoList;
 	}
-
 
 	public List<AccountDto> getAccountList(String username, String password) {
 		User user = userCheck(username, password);
@@ -181,7 +184,7 @@ public class AccountService {
 
 		List<ResultDto> dtoList = new ArrayList<>();
 		for (Transaction transaction : list) {
-			dtoList.add(ResultDto.transferFromEntity(transaction));
+			dtoList.add(ResultDto.fromEntity(transaction));
 		}
 
 		return dtoList;

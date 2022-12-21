@@ -30,27 +30,27 @@ public class ResultDto {
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime transactionDate;
 
-	public static  ResultDto depositWithdrawFromEntity(Transaction transaction){
-		return ResultDto.builder()
-				.accountNumber(transaction.getAccount().getAccountNumber())
-				.bankServiceType(transaction.getBankServiceType())
-				.balanceSnapshot(transaction.getBalanceSnapshot())
-				.transactionDate(transaction.getTransactionDate())
-				.amount(transaction.getAmount())
-				.build();
-	}
-
-	public static  ResultDto transferFromEntity(Transaction transaction){
-		return ResultDto.builder()
-				.accountNumber(transaction.getAccount().getAccountNumber())
-				.bankServiceType(transaction.getBankServiceType())
-				.balanceSnapshot(transaction.getBalanceSnapshot())
-				.transactionDate(transaction.getTransactionDate())
-				.receiverName(transaction.getTransactionDetail().getReceiverName())
-				.receiverAccountNumber(transaction.getTransactionDetail().getReceiverAccountNumber())
-				.senderName(transaction.getTransactionDetail().getSenderName())
-				.senderAccountNumber(transaction.getTransactionDetail().getSenderAccountNumber())
-				.amount(transaction.getAmount())
-				.build();
+	public static ResultDto fromEntity(Transaction transaction) {
+		if (transaction.getTransactionDetail() == null) {
+			return ResultDto.builder()
+					.accountNumber(transaction.getAccount().getAccountNumber())
+					.bankServiceType(transaction.getBankServiceType())
+					.balanceSnapshot(transaction.getBalanceSnapshot())
+					.transactionDate(transaction.getTransactionDate())
+					.amount(transaction.getAmount())
+					.build();
+		} else {
+			return ResultDto.builder()
+					.accountNumber(transaction.getAccount().getAccountNumber())
+					.bankServiceType(transaction.getBankServiceType())
+					.balanceSnapshot(transaction.getBalanceSnapshot())
+					.transactionDate(transaction.getTransactionDate())
+					.receiverName(transaction.getTransactionDetail().getReceiverName())
+					.receiverAccountNumber(transaction.getTransactionDetail().getReceiverAccountNumber())
+					.senderName(transaction.getTransactionDetail().getSenderName())
+					.senderAccountNumber(transaction.getTransactionDetail().getSenderAccountNumber())
+					.amount(transaction.getAmount())
+					.build();
+		}
 	}
 }

@@ -7,7 +7,7 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 public class DepositWithdrawDto {
-	
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -41,15 +41,15 @@ public class DepositWithdrawDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
-	public static class Response{
+	public static class Response {
 
 		public Long amount;
 		public Long balance;
 
-		public static DepositWithdrawDto.Response from(ResultDto resultDto){
+		public static DepositWithdrawDto.Response depositWithdrawFrom(ResultDto resultDto) {
 			return DepositWithdrawDto.Response.builder()
-					.amount(resultDto.getAmount())
 					.balance(resultDto.getBalanceSnapshot())
+					.amount(resultDto.getAmount())
 					.build();
 		}
 	}

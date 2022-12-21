@@ -1,5 +1,9 @@
 package com.zerobase.fintech.domain.account.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.zerobase.fintech.domain.account.type.AccountStatus;
 import com.zerobase.fintech.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -33,7 +37,12 @@ public class Account {
 	private Long balance;
 	private String password;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime registeredAt;
+
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime unRegisteredAt;
 
 	@CreatedDate

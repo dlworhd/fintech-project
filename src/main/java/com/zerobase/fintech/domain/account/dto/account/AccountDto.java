@@ -1,5 +1,9 @@
 package com.zerobase.fintech.domain.account.dto.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.zerobase.fintech.domain.account.entity.Account;
 import com.zerobase.fintech.domain.account.type.AccountStatus;
 import com.zerobase.fintech.domain.user.entity.User;
@@ -25,8 +29,12 @@ public class AccountDto {
 	@NotNull
 	private AccountStatus accountStatus;
 	@NotNull
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime registeredAt;
 	@NotNull
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime unRegisteredAt;
 
 	@NotNull

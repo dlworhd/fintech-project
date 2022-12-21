@@ -18,29 +18,28 @@ public class AdminController {
 	private final AdminService adminService;
 
 	@PostMapping("/status/account")
-	public ResponseEntity<?> accountStatusChange(@RequestBody @Valid AccountStatusDto.Request request){
-			return new ResponseEntity(adminService.accountStatusChange(
+	public ResponseEntity<?> accountStatusChange(@RequestBody @Valid AccountStatusDto.Request request) {
+		return new ResponseEntity(adminService.accountStatusChange(
 				request.getAccountNumber(),
 				request.getAccountStatus()), HttpStatus.OK);
 	}
 
 	@PostMapping("/status/user")
-	public ResponseEntity<?> userStatusChange(@RequestBody @Valid UserStatusDto.Request request){
+	public ResponseEntity<?> userStatusChange(@RequestBody @Valid UserStatusDto.Request request) {
 		return new ResponseEntity(adminService.userStatusChange(
 				request.getUsername(),
 				request.getUserStatus()), HttpStatus.OK);
 	}
 
 	@GetMapping("/transactions")
-	public ResponseEntity<?> transactions(){
-		return new ResponseEntity<>(adminService.getTransactions(), HttpStatus.OK);
+	public ResponseEntity<?> recentTransactionHistoriesByAdmin() {
+		return new ResponseEntity<>(adminService.recentTransactionHistoriesByAdmin(), HttpStatus.OK);
 	}
 
 	@GetMapping("/users")
-	public ResponseEntity<?> getUsers(){
-		return new ResponseEntity<>(adminService.getUsers(), HttpStatus.OK);
+	public ResponseEntity<?> recentJoinUsersHistories() {
+		return new ResponseEntity<>(adminService.recentJoinUsers(), HttpStatus.OK);
 	}
-
 
 
 }

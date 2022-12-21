@@ -40,27 +40,28 @@ public class AccountController {
 				request.getAccountPassword()), HttpStatus.OK);
 	}
 
+	// 입출금 내역
 	@GetMapping("/histories")
-	public ResponseEntity<?> getDepositWithdraw(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
-		return new ResponseEntity<>(accountService.lookUpDepositWithdraw(identifyAccountDto.getUsername(),
+	public ResponseEntity<?> recentTransactionHistoriesByUser(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
+		return new ResponseEntity<>(accountService.recentTransactionHistoriesByUser(identifyAccountDto.getUsername(),
 				identifyAccountDto.getPassword(),
 				identifyAccountDto.getAccountNumber(),
 				identifyAccountDto.getAccountPassword()
 		), HttpStatus.OK);
 	}
 
-	//계좌 목록
+	// 계좌 목록
 	@GetMapping("/lists")
-	public ResponseEntity<?> getAccounts(@RequestBody @Valid Login login) {
+	public ResponseEntity<?> myAccounts(@RequestBody @Valid Login login) {
 		return new ResponseEntity<>(accountService.getAccountList(
 				login.getUsername(),
 				login.getPassword()
 		), HttpStatus.OK);
 	}
 
-	//잔액 확인
+	// 잔액 확인
 	@GetMapping("/balance")
-	public ResponseEntity<?> getAccounts(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
+	public ResponseEntity<?> accountBalance(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
 		return new ResponseEntity<>(accountService.getBalance(
 				identifyAccountDto.getUsername(),
 				identifyAccountDto.getPassword(),
@@ -69,8 +70,9 @@ public class AccountController {
 		), HttpStatus.OK);
 	}
 
-	@PostMapping("/transactions")
-	public ResponseEntity<?> getTransactions(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
+	// 기간 거래 조회
+	@PostMapping("/period")
+	public ResponseEntity<?> recentTransactionHistoriesByPeriod(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
 		return new ResponseEntity<>(accountService.periodTransaction(
 				request.getAccountNumber(),
 				request.getAccountPassword(),

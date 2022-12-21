@@ -1,6 +1,5 @@
 package com.zerobase.fintech.global.config.redis;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
 
 @Configuration
 public class RedisConfig {
@@ -28,7 +28,9 @@ public class RedisConfig {
 	public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory){
 		RedisCacheConfiguration conf = RedisCacheConfiguration.defaultCacheConfig()
 				.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+				.entryTtl(Duration.ofHours(1));
+
 
 		return RedisCacheManager.RedisCacheManagerBuilder
 				.fromConnectionFactory(redisConnectionFactory)

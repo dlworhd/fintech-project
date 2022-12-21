@@ -1,6 +1,5 @@
 package com.zerobase.fintech.domain.account.dto.transaction;
 
-import com.zerobase.fintech.domain.account.entity.Transaction;
 import com.zerobase.fintech.domain.account.type.BankServiceType;
 import lombok.*;
 
@@ -50,15 +49,14 @@ public class TransferDto {
 		private String senderAccountNumber;
 		private String receiverAccountNumber;
 
-
-		public static TransferDto.Response fromEntity(Transaction transaction) {
-			return TransferDto.Response.builder()
-					.receiverName(transaction.getTransactionDetail().getReceiverName())
-					.receiverAccountNumber(transaction.getTransactionDetail().getReceiverAccountNumber())
-					.senderName(transaction.getTransactionDetail().getSenderName())
-					.senderAccountNumber(transaction.getTransactionDetail().getSenderAccountNumber())
-					.amount(transaction.getAmount())
-					.balance(transaction.getBalanceSnapshot())
+		public static TransferDto.Response transferFrom(ResultDto resultDto) {
+			return Response.builder()
+					.amount(resultDto.getAmount())
+					.balance(resultDto.getBalanceSnapshot())
+					.senderName(resultDto.getSenderName())
+					.receiverName(resultDto.getReceiverName())
+					.senderAccountNumber(resultDto.getSenderAccountNumber())
+					.receiverAccountNumber(resultDto.getReceiverAccountNumber())
 					.build();
 		}
 	}

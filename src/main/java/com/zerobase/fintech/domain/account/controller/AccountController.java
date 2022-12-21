@@ -42,7 +42,7 @@ public class AccountController {
 
 	// 입출금 내역
 	@GetMapping("/histories")
-	public ResponseEntity<?> recentTransactionHistoriesByUser(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
+	public ResponseEntity<?> histories(@RequestBody @Valid IdentifyAccountDto identifyAccountDto) {
 		return new ResponseEntity<>(accountService.recentTransactionHistoriesByUser(identifyAccountDto.getUsername(),
 				identifyAccountDto.getPassword(),
 				identifyAccountDto.getAccountNumber(),
@@ -51,8 +51,8 @@ public class AccountController {
 	}
 
 	// 계좌 목록
-	@GetMapping("/lists")
-	public ResponseEntity<?> myAccounts(@RequestBody @Valid Login login) {
+	@GetMapping("/accounts")
+	public ResponseEntity<?> accounts(@RequestBody @Valid Login login) {
 		return new ResponseEntity<>(accountService.getAccountList(
 				login.getUsername(),
 				login.getPassword()
@@ -72,7 +72,7 @@ public class AccountController {
 
 	// 기간 거래 조회
 	@PostMapping("/period")
-	public ResponseEntity<?> recentTransactionHistoriesBetweenPeriod(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
+	public ResponseEntity<?> historiesBetweenPeriod(@RequestBody @Valid ManageAccountDto.PeriodRequest request) {
 		return new ResponseEntity<>(accountService.periodTransaction(
 				request.getAccountNumber(),
 				request.getAccountPassword(),

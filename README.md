@@ -35,18 +35,18 @@
 - [x] 계좌 생성/삭제
 - [x] 계좌 입금/출금
 - [x] 계좌 송금
-- [x] 보유 계좌 확인
-- [x] 입출금 조회
-- [x] 송금 조회
-- [x] 전체 거래 조회
+- [x] 잔액 조회
+- [x] 계좌 목록 조회
+- [x] 거래 내역 조회
+- [x] 사용자 정보 조회
 - [x] 기간별 거래 조회
 
 </td>
 
 <td width="510">
 
-- [x] 사용자 관리
-- [x] 계좌 관리
+- [x] 계정 상태 변경
+- [x] 유저 상태 변경
 - [x] 최근 가입 조회
 - [x] 최근 거래 조회
 
@@ -73,9 +73,9 @@
 
 |메소드|URI|설명|
 |---|---|---|
-|PUT|/admin/account|계정 상태 변경|
-|PUT|/admin/user|유저 상태 변경|
-|GET|/admin/transactions |최근 거래 조회|
+|PUT|/admin/account|계좌 상태 변경|
+|PUT|/admin/user|사용자 상태 변경|
+|GET|/admin/transactions |전체 거래 조회|
 |GET|/admin/users|최근 가입 조회|
 
 
@@ -88,8 +88,9 @@
 |POST|/account/deposit|입금|
 |POST|/account/withdraw|출금|
 |POST|/account/transfer|송금|
+|POST|/account/period|기간별 거래 조회|
 |GET|/account/balance|잔액 조회|
-|GET|/account/histories|거래 내역 조회|
+|GET|/account/histories|거래 조회|
 |GET|/account/lists|계좌 목록 조회|
 
 

@@ -58,9 +58,41 @@
 
 
 
+- 사용자
+
+|메소드|URI|설명|
+|---|---|---|
+|POST|/auth/login|로그인|
+|POST|/user/register|회원가입|
+|GET|/user/info|유저 정보 조회|
+|GET|/user/info{username}|유저 권한 조회|
+|GET|/user/email-auth|이메일 인증|
 
 
-### 
+- 관리자
+
+|메소드|URI|설명|
+|---|---|---|
+|PUT|/admin/account|계정 상태 변경|
+|PUT|/admin/user|유저 상태 변경|
+|GET|/admin/transactions |최근 거래 조회|
+|GET|/admin/users|최근 가입 조회|
+
+
+- 계좌
+
+|메소드|URI|설명|
+|---|---|---|
+|POST|/account|계좌 생성|
+|DELETE|/account|계좌 삭제|
+|POST|/account/deposit|입금|
+|POST|/account/withdraw|출금|
+|POST|/account/transfer|송금|
+|GET|/account/balance|잔액 조회|
+|GET|/account/histories|거래 내역 조회|
+|GET|/account/lists|계좌 목록 조회|
+
+
 
 
 

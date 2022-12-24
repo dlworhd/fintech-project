@@ -17,14 +17,14 @@ public class AdminController {
 
 	private final AdminService adminService;
 
-	@PutMapping("/status/account")
+	@PutMapping("/account")
 	public ResponseEntity<?> accountStatusChange(@RequestBody @Valid AccountStatusDto.Request request) {
 		return new ResponseEntity(adminService.accountStatusChange(
 				request.getAccountNumber(),
 				request.getAccountStatus()), HttpStatus.OK);
 	}
 
-	@PutMapping("/status/user")
+	@PutMapping("/user")
 	public ResponseEntity<?> userStatusChange(@RequestBody @Valid UserStatusDto.Request request) {
 		return new ResponseEntity(adminService.userStatusChange(
 				request.getUsername(),

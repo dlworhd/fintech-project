@@ -67,6 +67,7 @@
 |GET|/user/info|유저 정보 조회|
 |GET|/user/info/{username}|유저 권한 조회|
 |GET|/user/email-auth|이메일 인증|
+|GET|/user/accounts|계좌 목록 조회|
 
 
 - 관리자
@@ -77,6 +78,7 @@
 |PUT|/admin/user|사용자 상태 변경|
 |GET|/admin/transactions |전체 거래 조회|
 |GET|/admin/users|최근 가입 조회|
+
 
 
 - 계좌
@@ -91,7 +93,6 @@
 |POST|/account/period|기간별 거래 조회|
 |GET|/account/balance|잔액 조회|
 |GET|/account/histories|거래 조회|
-|GET|/account/lists|계좌 목록 조회|
 
 
 

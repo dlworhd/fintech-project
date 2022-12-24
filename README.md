@@ -65,7 +65,7 @@
 |POST|/auth/login|로그인|
 |POST|/user/register|회원가입|
 |GET|/user/info|유저 정보 조회|
-|GET|/user/info{username}|유저 권한 조회|
+|GET|/user/info/{username}|유저 권한 조회|
 |GET|/user/email-auth|이메일 인증|
 
 

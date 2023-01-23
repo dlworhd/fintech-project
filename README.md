@@ -1,6 +1,7 @@
 # ERD 설계
 
-<img width="100%" alt="fintech-erd" src="https://user-images.githubusercontent.com/102597172/208899026-220c3e8a-24e4-409b-8c73-e39ee55b411b.png">
+![image](https://user-images.githubusercontent.com/102597172/214162943-d066bb63-e26d-411d-b07b-6c77a4125a14.png)
+
 
 
 # 어플리케이션 구조

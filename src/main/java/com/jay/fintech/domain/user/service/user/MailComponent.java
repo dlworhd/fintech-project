@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
 
+
 @Component
 @Getter
 @Setter
